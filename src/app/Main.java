@@ -4,7 +4,6 @@ import entity.Booking;
 import entity.Room;
 import entity.User;
 import utils.SearchMenu;
-import utils.UserFilter;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -87,7 +86,6 @@ public class Main {
 
         System.out.println("Enter " + NUMBER_OF_CLASSES_TO_ENTER + " users");
         enterUser(users, NUMBER_OF_CLASSES_TO_ENTER, sc);
-        //users = new User[]{new User("Luka", 19), new User("Rubi", 20), new User("Ivan", 20)};
 
         System.out.println("Enter " + NUMBER_OF_CLASSES_TO_ENTER + " rooms");
         enterRoom(rooms, NUMBER_OF_CLASSES_TO_ENTER, sc);
@@ -98,40 +96,5 @@ public class Main {
         SearchMenu menu = new SearchMenu(users, rooms, bookings);
         menu.display();
 
-        /*
-        while (true) {
-            System.out.println("Search:");
-            System.out.println("1) Users 2) Quit");
-            Integer query = sc.nextInt();
-            sc.nextLine();
-            if (query == 1) {
-                System.out.println("1) Age 2) Name");
-                query = sc.nextInt();
-                sc.nextLine();
-                if (query == 1) {
-                    System.out.println("Enter age to be found: ");
-                    Integer pattern = sc.nextInt();
-                    sc.nextLine();
-                    User[] results = userFiler.filterUserByAge(pattern);
-                    for(Integer i = 0; i < results.length; i++){
-                        System.out.println(results[i].getName() + " " + results[i].getAge());
-                    }
-                }
-                if (query == 2) {
-                    System.out.println("Enter name to be found: ");
-                    String pattern = sc.nextLine();
-                    User[] results = userFiler.filterUserByName(pattern);
-                    for(Integer i = 0; i < results.length; i++){
-                        System.out.println(results[i].getName() + " " + results[i].getAge());
-                    }
-                }
-                query = 0;
-            }
-            if(query == 2) {
-                break;
-            }
-        }
-
-         */
     }
 }

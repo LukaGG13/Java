@@ -25,8 +25,8 @@ public class SearchMenu {
             System.out.println("1) User 2) Rooms 3) Booking");
             switch (sc.nextInt()){
                 case 1 -> new UserSearchMenu(users, sc).display();
-                case 2 -> System.out.println("Bit ce");
-                case 3 -> System.out.println("Bit ce");
+                case 2 -> System.out.println("Not implemented");
+                case 3 -> System.out.println("Not implemented");
                 case 4 -> condition = Boolean.FALSE;
                 default -> System.out.println("Option not found try again");
             }
