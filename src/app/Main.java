@@ -1,29 +1,43 @@
 package app;
 
-import entity.Booking;
-import entity.Room;
-import entity.User;
+import entity.*;
 import utils.SearchMenu;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
-    static void displayUsers (User[] users) {
+    static void displayUsers(User[] users) {
+        if (users.length == 0) {
+            System.out.println("Cant display users no users found");
+            return;
+        }
+
         for (Integer i = 0; i < users.length; i++) {
-            System.out.println((i + 1) + ": " + users[i].getName() + " " + users[i].getAge());
+            System.out.println((i + 1) + ": " + users[i]);
         }
     }
 
-    static void displayRooms (Room[] rooms) {
+    static void displayRooms(Room[] rooms) {
+        if (rooms.length == 0) {
+            System.out.println("Cant display rooms no rooms found");
+            return;
+        }
+
         for (Integer i = 0; i < rooms.length; i++) {
-            System.out.println((i + 1) +": Number of beds: " + rooms[i].getNumOfBeds() + " Size in m^2: " + rooms[i].getSizeInSqrM());
+            System.out.println((i + 1) + ": " + rooms[i]);
         }
     }
 
-    static void enterUser(User[] users, Integer n , Scanner sc) {
-        for(Integer i = 0; i < n; i++) {
+    static void enterUser(User[] users, Room[] rooms, Booking[] bookings, Integer n, Scanner sc) {
+        for (Integer i = 0; i < n; i++) {
+            System.out.println("Enter 1) Admin 2) Guest");
+            Integer choice = sc.nextInt();
+            sc.nextLine();
+
             String userName;
             System.out.print("Enter name of user: ");
             userName = sc.nextLine();
@@ -33,68 +47,53 @@ public class Main {
             userAge = sc.nextInt();
             sc.nextLine();
 
-            users[i] = new User(userName, userAge);
+            users = Arrays.copyOf(users, users.length + 1);
+            if (choice == 1) {
+                users[i] = new Admin(userName, userAge);
+                if (users[i] instanceof Admin admin) {
+                    System.out.println("Create room");
+                    System.out.println("Enter number of beds and price");
+
+                    rooms = Arrays.copyOf(rooms, rooms.length + 1);
+                    rooms[rooms.length - 1] = admin.createRoom(sc.nextInt(), sc.nextBigDecimal());
+                    sc.nextLine();
+                }
+            } else if (choice == 2) {
+                users[i] = new Guest(userName, userAge);
+                if (users[i] instanceof Guest guest) {
+                    System.out.println("Create booking for user");
+                    System.out.println("Chose room ");
+                    if (rooms.length == 0) {
+                        System.out.println("No rooms to book try another time or maybe create a room with admin");
+                        continue;
+                    }
+                    displayRooms(rooms);
+                    Integer roomIdx = sc.nextInt() - 1;
+                    sc.nextLine();
+
+                    System.out.println("Enter check in date and checkout day (dd/MM/yyyy)");
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyyHH:mm");
+                    LocalDateTime checkIn = LocalDateTime.parse(sc.nextLine() + "08:00", fmt);
+                    LocalDateTime checkOut = LocalDateTime.parse(sc.nextLine() + "08:00", fmt);
+
+                    bookings = Arrays.copyOf(bookings, bookings.length + 1);
+                    bookings[bookings.length - 1] = guest.bookRoom(rooms[roomIdx], checkIn, checkOut);
+                }
+            }
         }
     }
 
-    static void enterRoom(Room[] rooms, Integer n, Scanner sc) {
-        for(Integer i = 0; i < n; i++) {
-            Integer numOfBeds;
-            System.out.print("Enter number of beds: ");
-            numOfBeds = sc.nextInt();
-            sc.nextLine();
-
-            Integer sizeInSqM;
-            System.out.print("Size of the room in square meters: ");
-            sizeInSqM = sc.nextInt();
-            sc.nextLine();
-
-            rooms[i] = new Room(numOfBeds, sizeInSqM);
-        }
-    }
-
-    static void enterBooking(Room[] rooms, User[] users, Booking[] bookings, Integer n, Scanner sc) {
-        for (Integer i = 0; i < n; i++) {
-            Integer idxRoom;
-            System.out.println("Select one room to be booked: ");
-            displayRooms(rooms);
-            idxRoom = sc.nextInt();
-            sc.nextLine();
-
-            Integer idxUser;
-            System.out.println("Select one used to book the room: ");
-            displayUsers(users);
-            idxUser = sc.nextInt();
-            sc.nextLine();
-
-            System.out.println("Enter check in date: ");
-            LocalDate checkIn = LocalDate.parse(sc.nextLine());
-
-            System.out.println("Enter check out date: ");
-            LocalDate checkOut = LocalDate.parse(sc.nextLine());
-
-            bookings[i] = new Booking(rooms[idxRoom - 1], users[idxUser - 1], checkIn, checkOut);
-        }
-    }
-
-    static void main() {
-        final Integer NUMBER_OF_CLASSES_TO_ENTER = 5;
-        Room[] rooms = new Room[NUMBER_OF_CLASSES_TO_ENTER];
-        User[] users = new User[NUMBER_OF_CLASSES_TO_ENTER];
-        Booking[] bookings = new Booking[NUMBER_OF_CLASSES_TO_ENTER];
+    public static void main(String[] args) {
+        final Integer NUMBER_OF_CLASSES_TO_ENTER = 2;
+        Room[] rooms = new Room[0];
+        User[] users = new User[0];
+        Booking[] bookings = new Booking[0];
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Enter " + NUMBER_OF_CLASSES_TO_ENTER + " users");
-        enterUser(users, NUMBER_OF_CLASSES_TO_ENTER, sc);
-
-        System.out.println("Enter " + NUMBER_OF_CLASSES_TO_ENTER + " rooms");
-        enterRoom(rooms, NUMBER_OF_CLASSES_TO_ENTER, sc);
-
-        System.out.println("Enter " + NUMBER_OF_CLASSES_TO_ENTER + " booking");
-        enterBooking(rooms, users, bookings,  NUMBER_OF_CLASSES_TO_ENTER, sc);
+        enterUser(users, rooms, bookings, NUMBER_OF_CLASSES_TO_ENTER, sc);
 
         SearchMenu menu = new SearchMenu(users, rooms, bookings);
         menu.display();
-
     }
 }

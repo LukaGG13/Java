@@ -76,7 +76,7 @@ public class SearchMenu {
                 default -> new User[0];
             };
             for (Integer i = 0; i < result.length; i++) {
-                System.out.println(result[i].getName() + " " + result[i].getAge());
+                System.out.println(result[i]);
             }
         }
     }
