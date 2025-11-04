@@ -1,13 +1,34 @@
 package org.example.entity;
 
+import org.example.app.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.util.Scanner;
 
+/**
+ * Class for representing admins.
+ * @version 1
+ * @author luka
+ */
 public final class Admin extends User implements AdminInterface{
+    private static final Logger log = LoggerFactory.getLogger(Admin.class);
+    /**
+     * Construct a new {@link Admin} object.
+     * @param name The name of the admin, as {@link String}.
+     * @param age The age of the admin, as {@link Integer}.
+     */
     public Admin(String name, Integer age) {
+        log.info("Created admin with name:\"{}\" and age:{}", name ,age);
         super(name, age);
     }
 
+    /**
+     * Prints out an interface to STDOUT for user to interact with {@link org.example.entity.Room.RoomBuilder}
+     * @param roomBuilder {@link org.example.entity.Room.RoomBuilder}
+     * @return Returns a {@link org.example.entity.Room.RoomBuilder}
+     */
     private Room.RoomBuilder buildRoom(Room.RoomBuilder roomBuilder) {
         Boolean condition = Boolean.TRUE;
         while (condition) {
