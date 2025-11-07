@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Class representing a room
@@ -17,7 +19,8 @@ public final class Room {
     private final BigDecimal pricePerNight;
     private final BigDecimal distanceFromCityCenter;
     private final BigDecimal distanceFromBeach;
-    private final Boolean breakfastIncluded;
+    public enum Amenity {GYM, WIFI, POOL, PARKING, SPA, BREAKFAST; }
+    private final Set<Amenity> amenities;
 
     /**
      * RoomBuilder - using builder pattern.
@@ -30,7 +33,7 @@ public final class Room {
         private Integer sizeInSqrM = 0;
         private BigDecimal distanceFromCityCenter =  new BigDecimal(0);
         private BigDecimal distanceFromBeach = new BigDecimal(0);
-        private Boolean breakfastIncluded = false;
+        private final EnumSet<Amenity> amenities = EnumSet.noneOf(Amenity.class);
 
         /**
          * Constructor for RoomBuilder.
@@ -43,6 +46,15 @@ public final class Room {
             this.pricePerNight = pricePerNight;
         }
 
+        /**
+         * Add a {@link Amenity} for the room.
+         * @param amenity {@link Amenity} to be added.
+         * @return {@link RoomBuilder} for builder pattern.
+         */
+        public RoomBuilder addAmenity(Amenity amenity) {
+            amenities.add(amenity);
+            return this;
+        }
         /**
          * Sets the size of the room in square meters.
          * @param sizeInSqrM the size of the room to be set in meters, as {@link Integer}.
@@ -74,16 +86,6 @@ public final class Room {
         }
 
         /**
-         * Sets if breakfast is included.
-         * @param breakfastIncluded Flag to set as {@link Boolean} if breakfast is included.
-         * @return The current {@link RoomBuilder} for builder pattern.
-         */
-        public RoomBuilder breakFastIncluded(Boolean breakfastIncluded) {
-           this.breakfastIncluded = breakfastIncluded;
-           return this;
-        }
-
-        /**
          * Build method for builder pattern.
          * @return A new {@link Room} object.
          */
@@ -103,7 +105,7 @@ public final class Room {
         this.pricePerNight = roomBuilder.pricePerNight;
         this.distanceFromCityCenter = roomBuilder.distanceFromCityCenter;
         this.distanceFromBeach = roomBuilder.distanceFromBeach;
-        this.breakfastIncluded = roomBuilder.breakfastIncluded;
+        this.amenities = roomBuilder.amenities;
     }
 
     /**
@@ -147,11 +149,11 @@ public final class Room {
     }
 
     /**
-     * Returns if breakfast is included.
-     * @return Returns if breakfast is included, as {@link Boolean}.
+     * Gets the amenities of the room as {@link EnumSet} of {@link Amenity}'s.
+     * @return A {@link EnumSet} of {@link Amenity}'s.
      */
-    public Boolean getBreakfastIncluded() {
-        return breakfastIncluded;
+    public Set<Amenity> getAmenities() {
+        return amenities;
     }
 
     @Override
@@ -162,7 +164,7 @@ public final class Room {
                 ", pricePerNight=" + pricePerNight +
                 ", distanceFromCityCenter=" + distanceFromCityCenter +
                 ", distanceFromBeach=" + distanceFromBeach +
-                ", breakfastIncluded=" + breakfastIncluded +
+                ", amenities=" + amenities +
                 '}';
     }
 }

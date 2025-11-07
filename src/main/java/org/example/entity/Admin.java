@@ -37,7 +37,7 @@ public final class Admin extends User implements AdminInterface{
                     1) sizeInSqrM
                     2) distanceFromCityCenter
                     3) distanceFromBeach
-                    4) breakfastIncluded
+                    4) add amenity
                     5) finish""");
 
             Scanner sc = new Scanner(System.in);
@@ -47,9 +47,16 @@ public final class Admin extends User implements AdminInterface{
                 case 1 -> roomBuilder.sizeInSqrM(sc.nextInt());
                 case 2 -> roomBuilder.distanceFromCityCenter(sc.nextBigDecimal());
                 case 3 -> roomBuilder.distanceFromBeach(sc.nextBigDecimal());
-                case 4 -> roomBuilder.breakFastIncluded(sc.nextBoolean());
+                case 4 -> {
+                    for(Room.Amenity amenity : Room.Amenity.values()) {
+                        System.out.println(amenity.name());
+                    }
+                    sc.nextLine();
+                    String amenity = sc.nextLine();
+                    roomBuilder.addAmenity(Room.Amenity.valueOf(amenity));
+                }
                 case 5 -> condition = Boolean.FALSE;
-                default -> condition = Boolean.TRUE;
+                    default -> condition = Boolean.TRUE;
             }
         }
         return roomBuilder;

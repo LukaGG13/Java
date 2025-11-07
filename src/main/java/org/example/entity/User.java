@@ -1,5 +1,7 @@
 package org.example.entity;
 
+import java.util.Objects;
+
 /**
  * Abstract class representing the user.
  * @version 1.0
@@ -33,6 +35,18 @@ public abstract class User {
      */
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(name, user.name) && Objects.equals(age, user.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
     }
 
     @Override

@@ -5,15 +5,18 @@ import org.example.entity.Booking;
 import org.example.entity.Room;
 import org.example.entity.User;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class SearchMenu {
     private final Scanner sc;
-    private User[] users;
-    private Room[] rooms;
-    private Booking[] bookings;
+    private List<User> users;
+    private List<Room> rooms;
+    private List<Booking> bookings;
 
-    public SearchMenu(User[] users, Room[] rooms, Booking[] bookings) {
+    public SearchMenu(List<User> users, List<Room> rooms, List<Booking> bookings) {
         this.users = users;
         this.rooms = rooms;
         this.bookings = bookings;
@@ -24,6 +27,7 @@ public class SearchMenu {
         boolean condition = Boolean.TRUE;
         while (condition){
             System.out.println("1) User 2) Rooms 3) Booking");
+            //TODO fix input mismatch exception
             switch (sc.nextInt()){
                 case 1 -> new UserSearchMenu(users, sc).display();
                 case 2 -> System.out.println("Not implemented");
@@ -33,39 +37,39 @@ public class SearchMenu {
             }
         }
     }
-    private static class UserSearchMenu {
-        private Scanner sc;
-        private User[] users;
-        private UserFilter filter;
+    //TODO implemet this class
+    private final static class BookingSearchMenu {}
+    private final static class UserSearchMenu {
+        private final Scanner sc;
+        private final List<User> users;
 
-        public UserSearchMenu(User[] users, Scanner sc) {
+        public UserSearchMenu(List<User> users, Scanner sc) {
             this.users = users;
             this.sc = sc;
-            this.filter = new UserFilter();
         }
 
-        private User[] nameSubDisplay() {
+        private List<User> nameSubDisplay() {
             System.out.println("Enter name to be searched or (min/max)");
             String pattern = sc.nextLine();
             return switch (pattern){
-                case "min" -> new User[] {filter.findMinName(users)};
-                case "max" -> new User[] {filter.findMaxName(users)};
-                default -> filter.filterUserByName(users, pattern);
+                case "max" ->  users.stream().max(Comparator.comparing(User::getName)).stream().toList();
+                case "min" ->  users.stream().min(Comparator.comparing(User::getName)).stream().toList();
+                default -> users.stream().filter(name -> name.getName().equals(pattern)).toList();
             };
         }
 
-        private User[] ageSubDisplay() {
+        private List<User> ageSubDisplay() {
             System.out.println("Enter age to be searched or (min/max)");
             String pattern = sc.nextLine();
             return switch (pattern){
-                case "min" -> new User[] {filter.findMinAge(users)};
-                case "max" -> new User[] {filter.findMaxAge(users)};
-                default -> filter.filterUserByAge(users, Integer.parseInt(pattern));
+                case "max" ->  users.stream().max(Comparator.comparing(User::getAge)).stream().toList();
+                case "min" ->  users.stream().min(Comparator.comparing(User::getAge)).stream().toList();
+                default -> users.stream().filter(name -> name.getAge().equals(Integer.parseInt(pattern))).toList();
             };
         }
         public void display() {
             System.out.println("1) Name 2) Age");
-            User[] result = switch (sc.nextInt()){
+            List<User> result = switch (sc.nextInt()){
                 case 1 -> {
                     sc.nextLine();
                     yield nameSubDisplay();
@@ -76,11 +80,9 @@ public class SearchMenu {
                     yield ageSubDisplay();
                 }
 
-                default -> new User[0];
+                default -> new ArrayList<>();
             };
-            for (Integer i = 0; i < result.length; i++) {
-                System.out.println(result[i]);
+                result.forEach(System.out::println);
             }
         }
     }
-}
