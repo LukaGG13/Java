@@ -1,6 +1,7 @@
 package entity;
 
 import java.math.BigDecimal;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class Admin extends User implements AdminInterface{
@@ -18,8 +19,10 @@ public final class Admin extends User implements AdminInterface{
                     3) distanceFromBeach
                     4) breakfastIncluded
                     5) finish""");
+
             Scanner sc = new Scanner(System.in);
             Integer answer = sc.nextInt();
+
             switch (answer) {
                 case 1 -> roomBuilder.sizeInSqrM(sc.nextInt());
                 case 2 -> roomBuilder.distanceFromCityCenter(sc.nextBigDecimal());
