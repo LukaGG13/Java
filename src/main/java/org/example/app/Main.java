@@ -2,14 +2,17 @@ package org.example.app;
 
 import org.example.entity.*;
 import org.example.utils.SearchMenu;
+import org.example.utils.UserSorter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -176,7 +179,7 @@ public class Main {
     public static void main(String[] args) {
         log.trace("Program started");
         log.info("Program started");
-        final Integer NUMBER_OF_CLASSES_TO_ENTER = 5;
+        final Integer NUMBER_OF_CLASSES_TO_ENTER = 0;
         List<Room> rooms = new ArrayList<>();
         List<User> users = new ArrayList<>();
         List<Booking> bookings = new ArrayList<>();
@@ -205,7 +208,28 @@ public class Main {
         users.add(new Admin("Erik", 19));
         users.add(new Admin("Rubi", 20));
         users.add(new Admin("Lovro", 20));
-        SearchMenu menu = new SearchMenu(users, rooms, bookings);
-        menu.display();
+        users.add(new Admin("abcd", 21));
+        users.add(new Admin("aabd", 21));
+
+        if (users.get(0) instanceof Admin a) {
+            var room = a.createRoom(2, BigDecimal.valueOf(2.0));
+            rooms.add(room);
+        }
+        bookings.add(new Booking(rooms.get(0), users.get(0), LocalDateTime.of(3000, 1, 1, 1, 1), LocalDateTime.of(3000,2,1,1,1)));
+        //SearchMenu menu = new SearchMenu(users, rooms, bookings);
+        //menu.display();
+
+        //UserSorter.sort(users);
+        //UserSorter.sortByAge(users);
+        UserSorter.sortByName(users);
+        users.reversed().forEach(System.out::println);
+        System.out.println();
+        System.out.println();
+        users.forEach(System.out::println);
+
+        System.out.println();
+        System.out.println();
+        var result = bookings.stream().collect(Collectors.groupingBy(Booking::checkIn));
+        result.forEach(((k, v) -> v.forEach(System.out::println)));
     }
 }
