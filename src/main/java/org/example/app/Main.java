@@ -229,7 +229,8 @@ public class Main {
 
         System.out.println();
         System.out.println();
-        var result = bookings.stream().collect(Collectors.groupingBy(Booking::checkIn));
+
+        Map<LocalDateTime, List<Booking>> result = bookings.stream().collect(Collectors.groupingBy(Booking::checkIn));
         result.forEach(((k, v) -> v.forEach(System.out::println)));
     }
 }
