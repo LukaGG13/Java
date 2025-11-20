@@ -4,7 +4,7 @@ import org.example.entity.User;
 
 import java.util.Arrays;
 
-public class UserFilter {
+public final class UserFilter {
 
     private User[] addUserToResult(User[] result, Integer n, User userToBeAdded) {
         User[] temp = Arrays.copyOf(result, n);

@@ -5,7 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Scanner;
+
+import static java.lang.IO.println;
 
 /**
  * Class for representing admins.
@@ -25,46 +28,41 @@ public final class Admin extends User implements AdminInterface{
     }
 
     /**
-     * Prints out an interface to STDOUT for user to interact with {@link org.example.entity.Room.RoomBuilder}
-     * @param roomBuilder {@link org.example.entity.Room.RoomBuilder}
-     * @return Returns a {@link org.example.entity.Room.RoomBuilder}
+     * Creates a room using {@link org.example.entity.Room.RoomBuilder}.
+     * @param roomBuilder {@link org.example.entity.Room.RoomBuilder}.
+     * @param inputService class from witch input to get input for creating room must implement {@link AdminInputService}.
+     * @return Returns a {@link org.example.entity.Room.RoomBuilder}.
      */
-    private Room.RoomBuilder buildRoom(Room.RoomBuilder roomBuilder) {
-        Boolean condition = Boolean.TRUE;
-        while (condition) {
-            System.out.println("""
-                    Select:
-                    1) sizeInSqrM
-                    2) distanceFromCityCenter
-                    3) distanceFromBeach
-                    4) add amenity
-                    5) finish""");
-
-            Scanner sc = new Scanner(System.in);
-            Integer answer = sc.nextInt();
-
-            switch (answer) {
-                case 1 -> roomBuilder.sizeInSqrM(sc.nextInt());
-                case 2 -> roomBuilder.distanceFromCityCenter(sc.nextBigDecimal());
-                case 3 -> roomBuilder.distanceFromBeach(sc.nextBigDecimal());
-                case 4 -> {
-                    for(Room.Amenity amenity : Room.Amenity.values()) {
-                        System.out.println(amenity.name());
-                    }
-                    sc.nextLine();
-                    String amenity = sc.nextLine();
-                    roomBuilder.addAmenity(Room.Amenity.valueOf(amenity));
-                }
-                case 5 -> condition = Boolean.FALSE;
-                    default -> condition = Boolean.TRUE;
+    public <T extends AdminInputService> Room.RoomBuilder buildRoom(Room.RoomBuilder roomBuilder, T inputService) {
+        boolean finished = false;
+        while (!finished) {
+            println("""
+                Select:
+                1) SizeInSqrM
+                2) DistanceFromCityCenter
+                3) DistanceFromBeach
+                4) Add amenity
+                5) Finish""");
+            switch (inputService.askInteger("Chose option: ")){
+                case 1 -> roomBuilder.sizeInSqrM(inputService.askInteger("Enter size in Square meters: "));
+                case 2 -> roomBuilder.distanceFromCityCenter(inputService.askBigDecimal("Enter distance from city center in km: "));
+                case 3 -> roomBuilder.distanceFromBeach(inputService.askBigDecimal("Enter distance form beach in km: "));
+                case 4 -> roomBuilder.addAmenity(inputService.askRoomAmenity("Chose amenity " + Arrays.toString(Room.Amenity.values()) + " "));
+                case 5 -> finished = true;
+                default -> println("Incorrect input try again");
             }
         }
+
         return roomBuilder;
+    }
+
+    public <T extends AdminInputService> Room createRoom(Integer numberOfBeds, BigDecimal pricePerNight, T inputService ) {
+        return buildRoom(new Room.RoomBuilder(numberOfBeds, pricePerNight), inputService).build();
     }
 
     @Override
     public Room createRoom(Integer numberOfBeds, BigDecimal pricePerNight) {
-        return buildRoom(new Room.RoomBuilder(numberOfBeds, pricePerNight)).build();
+        return createRoom(numberOfBeds, pricePerNight, new AdminInputServiceConsole());
     }
 
 }

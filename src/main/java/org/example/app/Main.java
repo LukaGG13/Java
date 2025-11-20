@@ -1,10 +1,13 @@
 package org.example.app;
 
 import org.example.entity.*;
+import org.example.utils.Input;
 import org.example.utils.SearchMenu;
 import org.example.utils.UserSorter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.example.app.*;
+import static java.lang.IO.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -202,20 +205,30 @@ public class Main {
             }
         }
 
-        users.add(new Admin("Luka", 19));
-        users.add(new Admin("Gabrijel", 20));
-        users.add(new Admin("Ivan", 20));
-        users.add(new Admin("Erik", 19));
-        users.add(new Admin("Rubi", 20));
-        users.add(new Admin("Lovro", 20));
-        users.add(new Admin("abcd", 21));
-        users.add(new Admin("aabd", 21));
+        Input.mockUsers(users);
+        Input.mockRooms(rooms);
+        Input.mockBookings(bookings);
 
-        if (users.get(0) instanceof Admin a) {
+        println("Random users:");
+        for(User user : users) {
+            println(user);
+        }
+
+        println("Random rooms:");
+        for(Room room : rooms) {
+            println(room);
+        }
+
+        println("Random bookings:");
+        for(Booking booking : bookings) {
+            println(booking);
+        }
+
+        if (!users.isEmpty() && users.get(0) instanceof Admin a) {
             var room = a.createRoom(2, BigDecimal.valueOf(2.0));
             rooms.add(room);
         }
-        bookings.add(new Booking(rooms.get(0), users.get(0), LocalDateTime.of(3000, 1, 1, 1, 1), LocalDateTime.of(3000,2,1,1,1)));
+        //bookings.add(new Booking(rooms.get(0), users.get(0), LocalDateTime.of(3000, 1, 1, 1, 1), LocalDateTime.of(3000,2,1,1,1)));
         //SearchMenu menu = new SearchMenu(users, rooms, bookings);
         //menu.display();
 
@@ -232,5 +245,13 @@ public class Main {
 
         Map<LocalDateTime, List<Booking>> result = bookings.stream().collect(Collectors.groupingBy(Booking::checkIn));
         result.forEach(((k, v) -> v.forEach(System.out::println)));
+
+        var minUser = UserSorter.min(users, User::getAge);
+        if(minUser.isPresent()){
+            println("min user is -> " + minUser.orElseThrow());
+        } else {
+            println("No min user found");
+        }
+
     }
 }

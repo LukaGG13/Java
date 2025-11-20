@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-public class SearchMenu {
+public final class SearchMenu {
     private final Scanner sc;
     private List<User> users;
     private List<Room> rooms;

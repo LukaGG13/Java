@@ -19,7 +19,7 @@ public final class Room {
     private final BigDecimal pricePerNight;
     private final BigDecimal distanceFromCityCenter;
     private final BigDecimal distanceFromBeach;
-    public enum Amenity {GYM, WIFI, POOL, PARKING, SPA, BREAKFAST; }
+    public enum Amenity {GYM, WIFI, POOL, PARKING, SPA, BREAKFAST;}
     private final Set<Amenity> amenities;
 
     /**
