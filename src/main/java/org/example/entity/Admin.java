@@ -33,7 +33,7 @@ public final class Admin extends User implements AdminInterface{
      * @param inputService class from witch input to get input for creating room must implement {@link AdminInputService}.
      * @return Returns a {@link org.example.entity.Room.RoomBuilder}.
      */
-    public <T extends AdminInputService> Room.RoomBuilder buildRoom(Room.RoomBuilder roomBuilder, T inputService) {
+    public  Room.RoomBuilder buildRoom(Room.RoomBuilder roomBuilder, AdminInputService inputService) {
         boolean finished = false;
         while (!finished) {
             println("""

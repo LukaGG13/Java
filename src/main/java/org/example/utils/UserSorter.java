@@ -37,6 +37,12 @@ public final class UserSorter {
     }
 
     public static <T extends User, U extends Comparable<? super U>> Optional<User> min(List<User> users, Function<? super T, ? extends U> f) {
-        return users.stream().min((Comparator<? super User>) Comparator.comparing(f));
+        //OPTIONAL
+        return users.stream().min((Comparator<? super User>) Comparator.comparing(f)); //TODO what he helly
+    }
+
+    //TODO i dalje ne razumijem sta se dogada tu 
+    public static <U extends Comparable<? super U>> Optional<User> max(List<User> users, Function<User, U> f) {
+       return users.stream().max(Comparator.comparing(f));
     }
 }
