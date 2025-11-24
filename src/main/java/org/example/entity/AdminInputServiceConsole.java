@@ -5,8 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
-import static java.lang.IO.println;
-import static java.lang.IO.readln;
+import static java.lang.IO.*;
 
 /**
  * Class to get input for {@link Admin} from console.
@@ -15,9 +14,6 @@ import static java.lang.IO.readln;
  */
 public class AdminInputServiceConsole implements AdminInputService {
     private static final Logger log = LoggerFactory.getLogger(AdminInputServiceConsole.class);
-
-    AdminInputServiceConsole() {
-    }
 
     /**
      * Ask the user for a {@link Integer}.

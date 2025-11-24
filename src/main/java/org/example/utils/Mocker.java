@@ -16,10 +16,10 @@ import java.util.Random;
 /**
  * A utility class made for making getting input easer
  */
-public final class Input {
+public final class Mocker {
     private static final Faker faker = new Faker();
     private static final Random random = new Random();
-    private static final Logger log = LoggerFactory.getLogger(Input.class);
+    private static final Logger log = LoggerFactory.getLogger(Mocker.class);
 
     private static final Integer DEFAULT_NUMBER = 10;
 
@@ -43,7 +43,7 @@ public final class Input {
     private static final Integer CHECK_OUT_HOUR = 10;
     private static final Integer CHECK_OUT_MINUTE = 0;
 
-    private Input() {}
+    private Mocker() {}
 
     /**
      * Returns  a mock {@link Admin}.
