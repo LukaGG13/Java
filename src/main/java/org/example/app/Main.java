@@ -2,11 +2,11 @@ package org.example.app;
 
 import org.example.entity.*;
 import org.example.utils.Mocker;
+import org.example.utils.UserSorter;
 import org.example.utils.menus.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -17,6 +17,7 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
+    //TODO java doc i logs pls
     static void main() {
         log.trace("Program started");
         log.info("Program started");
@@ -42,11 +43,12 @@ public class Main {
                case null, default -> new DefaultMenu(repository);
             };
 
+            println();
+            println();
             menu.printMenu();
             menu.askChoice();
             switch (menu.doChoice()){
                 case MenuResult.LoggedOut _ -> {
-                    println("loggin out");
                     activeUser = Optional.empty();
                     repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
                 }
@@ -56,7 +58,6 @@ public class Main {
                 case MenuResult.GuestCreated(Guest guest) -> users.add(guest);
                 case MenuResult.ReviewCreated roomReviewSimpleEntry -> {}//TODO
                 case MenuResult.LogIn(User user) -> {
-                    println("loggin in");
                    activeUser = Optional.of(user);
                    repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
                 }
@@ -65,53 +66,7 @@ public class Main {
                 default -> throw new IllegalStateException("Unexpected value: " + menu.doChoice());
             }
         }
-
-        /**
-        println("Enter " + NUMBER_OF_CLASSES_TO_ENTER + " users");
-        for (int i = 0; i < NUMBER_OF_CLASSES_TO_ENTER; i++) {
-            try {
-                User newUser = enterUser(sc);
-                switch (newUser) {
-                    case Admin admin -> rooms.add(enterRoom(admin,sc));
-                    case Guest guest -> bookings.add(enterGuest(guest, reviews, rooms, sc));
-                    default -> throw new InputMismatchException("Didn't create user");
-                }
-                users.add(newUser);
-            } catch (IncorrectInputException | DateTimeParseException | IllegalArgumentException | InputMismatchException e) { //TODO mislim da je kamen u glavu
-                log.error("Incorrect Input exception caught", e);
-                println("Count create user something went wrong try again");
-            }
-        }
-
-        Mocker.mockUsers(users);
-        Mocker.mockRooms(rooms);
-        Mocker.mockBookings(bookings);
-
-        println("Random users:");
-        printList(users);
-
-        println("Random rooms:");
-        printList(rooms);
-
-        println("Random bookings:");
-        printList(bookings);
-
-        UserSorter.sortByName(users);
-        users.reversed().forEach(IO::println);
-        println();
-
-        println();
-        println();
-
-        Map<LocalDateTime, List<Booking>> result = bookings.stream().collect(Collectors.groupingBy(Booking::checkIn));
-        result.forEach(((_, v) -> v.forEach(IO::println)));
-
-        var minUser = UserSorter.min(users, User::getAge);
-        if(minUser.isPresent()){
-            println("min user is -> " + minUser.orElseThrow());
-        } else {
-            println("No min user found");
-        }
-         **/
+        println(UserSorter.min(users, User::getAge));
+        println(UserSorter.max(users, User::getAge));
     }
 }

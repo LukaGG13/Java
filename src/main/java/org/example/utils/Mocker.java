@@ -21,6 +21,7 @@ public final class Mocker {
     private static final Random random = new Random();
     private static final Logger log = LoggerFactory.getLogger(Mocker.class);
 
+    //TODO stavi enum
     private static final Integer DEFAULT_NUMBER = 10;
 
     private static final Integer ODS_FOR_ADMIN = 10;

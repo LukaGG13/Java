@@ -31,17 +31,20 @@ public final class UserSorter {
      */
     public static List<User> sortByAge(List<User> users) {
         users.sort((u1, u2) -> u1.getAge().compareTo(u2.getAge()));
-        //users.sort(Comparator.comparing(User::getAge));
-        //users = users.reversed();
         return users;
     }
 
-    public static <T extends User, U extends Comparable<? super U>> Optional<User> min(List<User> users, Function<? super T, ? extends U> f) {
-        //OPTIONAL
-        return users.stream().min((Comparator<? super User>) Comparator.comparing(f)); //TODO what he helly
+
+    /*
+    public static <T extends User, U extends Comparable<? super U>> Optional<T> min(List<T> users, Function<? super T, ? extends U> f){
+        return  users.stream().min(Comparator.comparing(f));
+    }
+    */
+
+    public static <T, U extends Comparable<? super U>> Optional<T> min(List<T> users, Function<? super T, ? extends U> f){
+        return  users.stream().min(Comparator.comparing(f));
     }
 
-    //TODO i dalje ne razumijem sta se dogada tu 
     public static <U extends Comparable<? super U>> Optional<User> max(List<User> users, Function<User, U> f) {
        return users.stream().max(Comparator.comparing(f));
     }

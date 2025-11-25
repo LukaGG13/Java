@@ -42,7 +42,7 @@ public class DefaultMenu implements MenuInterface{
                 }
             } catch (NumberFormatException e){
                 println("Something when wrong try again");
-                log.error("A parsing error in defaul menu", e);
+                log.error("A parsing error in default menu", e);
             }
         }
     }
