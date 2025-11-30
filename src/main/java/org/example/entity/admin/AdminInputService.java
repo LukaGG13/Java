@@ -1,4 +1,6 @@
-package org.example.entity;
+package org.example.entity.admin;
+
+import org.example.entity.room.Room;
 
 import java.math.BigDecimal;
 

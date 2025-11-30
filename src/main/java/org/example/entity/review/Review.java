@@ -1,4 +1,6 @@
-package org.example.entity;
+package org.example.entity.review;
+
+import org.example.entity.guest.Guest;
 
 import java.time.LocalDate;
 import java.util.Objects;

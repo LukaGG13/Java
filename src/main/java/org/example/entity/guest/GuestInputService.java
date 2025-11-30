@@ -1,7 +1,8 @@
-package org.example.entity;
+package org.example.entity.guest;
+
+import org.example.entity.room.Room;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 public interface GuestInputService {
     Integer askInteger(String msg, Integer lowerBound, Integer upperBound);

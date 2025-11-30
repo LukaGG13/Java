@@ -1,7 +1,11 @@
 package org.example.utils;
 
 import net.datafaker.Faker;
-import org.example.entity.*;
+import org.example.entity.admin.Admin;
+import org.example.entity.booking.Booking;
+import org.example.entity.guest.Guest;
+import org.example.entity.room.Room;
+import org.example.entity.user.User;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 

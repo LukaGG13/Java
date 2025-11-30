@@ -1,14 +1,11 @@
 package org.example.utils;
 
-import org.example.entity.User;
+import org.example.entity.user.User;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public final class UserSorter {
     private UserSorter(){}
@@ -19,7 +16,6 @@ public final class UserSorter {
      * @return The sorted {@link List} of {@link User}'s.
      */
     public static List<User> sortByName(List<User> users) {
-        //users.sort(Comparator.comparing(User::getName).reversed());
         users.sort((u1, u2) -> u1.getName().compareTo(u2.getName()));
         return users;
     }
@@ -34,12 +30,6 @@ public final class UserSorter {
         return users;
     }
 
-
-    /*
-    public static <T extends User, U extends Comparable<? super U>> Optional<T> min(List<T> users, Function<? super T, ? extends U> f){
-        return  users.stream().min(Comparator.comparing(f));
-    }
-    */
 
     public static <T, U extends Comparable<? super U>> Optional<T> min(List<T> users, Function<? super T, ? extends U> f){
         return  users.stream().min(Comparator.comparing(f));

@@ -1,6 +1,11 @@
 package org.example.utils.menus;
 
-import org.example.entity.*;
+import org.example.entity.admin.Admin;
+import org.example.entity.booking.Booking;
+import org.example.entity.guest.Guest;
+import org.example.entity.review.Review;
+import org.example.entity.room.Room;
+import org.example.entity.user.User;
 
 import java.util.AbstractMap;
 

@@ -1,12 +1,12 @@
-package org.example.entity;
+package org.example.entity.admin;
 
-import org.example.app.Main;
+import org.example.entity.room.Room;
+import org.example.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Scanner;
 
 import static java.lang.IO.println;
 
@@ -28,12 +28,12 @@ public final class Admin extends User implements AdminInterface{
     }
 
     /**
-     * Creates a room using {@link org.example.entity.Room.RoomBuilder}.
-     * @param roomBuilder {@link org.example.entity.Room.RoomBuilder}.
+     * Creates a room using {@link Room.RoomBuilder}.
+     * @param roomBuilder {@link Room.RoomBuilder}.
      * @param inputService class from witch input to get input for creating room must implement {@link AdminInputService}.
-     * @return Returns a {@link org.example.entity.Room.RoomBuilder}.
+     * @return Returns a {@link Room.RoomBuilder}.
      */
-    public  Room.RoomBuilder buildRoom(Room.RoomBuilder roomBuilder, AdminInputService inputService) {
+    public Room.RoomBuilder buildRoom(Room.RoomBuilder roomBuilder, AdminInputService inputService) {
         boolean finished = false;
         while (!finished) {
             println("""

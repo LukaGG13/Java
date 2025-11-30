@@ -1,6 +1,5 @@
-package org.example.entity;
+package org.example.entity.user;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 /**

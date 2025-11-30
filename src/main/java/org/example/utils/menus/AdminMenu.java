@@ -1,6 +1,9 @@
 package org.example.utils.menus;
 
-import org.example.entity.*;
+import org.example.entity.admin.Admin;
+import org.example.entity.admin.AdminInputServiceConsole;
+import org.example.entity.repository.Repository;
+import org.example.entity.room.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +13,12 @@ import java.util.List;
 import static java.lang.IO.readln;
 
 //TODO javadoc
+
+/**
+ * Class to display an admin menu in the console
+ * @version 1.0
+ * @author luka
+ */
 public class AdminMenu implements MenuInterface {
     private final List<String> choices = List.of("1) Create room",
                                            "2) Log out");
@@ -17,6 +26,10 @@ public class AdminMenu implements MenuInterface {
     private static final Logger log = LoggerFactory.getLogger(AdminMenu.class);
     private final Repository repository;
 
+    /**
+     * Constructs a new {@link AdminMenu}.
+     * @param repository a {@link Repository} to access {@link Room}'s, {@link org.example.entity.user.User}'s, and {@link org.example.entity.booking.Booking}'s.
+     */
     public AdminMenu(Repository repository){
         this.repository = repository;
     }
@@ -40,6 +53,10 @@ public class AdminMenu implements MenuInterface {
         }
     }
 
+    /**
+     * Create a {@link Room}
+     * @return {@link Room}.
+     */
     private Room choiceCreateRoom() {
         if (repository.getActiveUser().orElseThrow() instanceof Admin admin) {
             var service = new AdminInputServiceConsole();

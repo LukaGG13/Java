@@ -1,5 +1,7 @@
-package org.example.entity;
+package org.example.entity.guest;
 
+import org.example.entity.repository.Repository;
+import org.example.entity.room.Room;
 import org.example.utils.InputOutputUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Optional;
 
 import static java.lang.IO.println;
 import static java.lang.IO.readln;

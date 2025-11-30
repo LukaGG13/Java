@@ -1,5 +1,6 @@
-package org.example.entity;
+package org.example.entity.admin;
 
+import org.example.entity.room.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

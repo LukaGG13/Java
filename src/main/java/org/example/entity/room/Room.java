@@ -1,4 +1,4 @@
-package org.example.entity;
+package org.example.entity.room;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public final class Room {
      * @version 1.0
      * @author luka
      */
-    static final class RoomBuilder {
+    public static final class RoomBuilder {
         private final Integer numOfBeds;
         private final BigDecimal pricePerNight;
         private Integer sizeInSqrM = 0;

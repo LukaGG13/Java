@@ -1,9 +1,9 @@
 package org.example.utils.menus;
 
-import org.example.entity.Admin;
-import org.example.entity.Guest;
-import org.example.entity.Repository;
-import org.example.entity.User;
+import org.example.entity.admin.Admin;
+import org.example.entity.guest.Guest;
+import org.example.entity.repository.Repository;
+import org.example.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,5 +1,9 @@
-package org.example.entity;
+package org.example.entity.guest;
 
+import org.example.entity.booking.Booking;
+import org.example.entity.review.Review;
+import org.example.entity.room.Room;
+import org.example.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

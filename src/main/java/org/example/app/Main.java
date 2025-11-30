@@ -1,6 +1,13 @@
 package org.example.app;
 
-import org.example.entity.*;
+import org.example.entity.admin.Admin;
+import org.example.entity.booking.Booking;
+import org.example.entity.guest.Guest;
+import org.example.entity.repository.DataRepository;
+import org.example.entity.repository.Repository;
+import org.example.entity.review.Review;
+import org.example.entity.room.Room;
+import org.example.entity.user.User;
 import org.example.utils.Mocker;
 import org.example.utils.UserSorter;
 import org.example.utils.menus.*;
@@ -17,7 +24,7 @@ public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    //TODO java doc i logs pls
+    //TODO java doc i logs
     static void main() {
         log.trace("Program started");
         log.info("Program started");

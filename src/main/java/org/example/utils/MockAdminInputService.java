@@ -1,10 +1,9 @@
 package org.example.utils;
 
-import org.example.entity.AdminInputService;
-import org.example.entity.Room;
+import org.example.entity.admin.AdminInputService;
+import org.example.entity.room.Room;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Random;
 

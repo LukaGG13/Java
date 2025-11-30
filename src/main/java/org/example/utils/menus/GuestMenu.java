@@ -1,6 +1,11 @@
 package org.example.utils.menus;
 
-import org.example.entity.*;
+import org.example.entity.booking.Booking;
+import org.example.entity.guest.Guest;
+import org.example.entity.guest.GuestInputServiceConsole;
+import org.example.entity.repository.Repository;
+import org.example.entity.review.Review;
+import org.example.entity.room.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
