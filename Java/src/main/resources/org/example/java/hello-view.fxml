@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.java.HelloController">
+   <children>
+      <TableView id="tableViewId" layoutX="26.0" layoutY="88.0" prefHeight="200.0" prefWidth="546.0">
+        <columns>
+          <TableColumn id="C1" prefWidth="75.0" text="C1" />
+          <TableColumn id="C2" prefWidth="75.0" text="C2" />
+            <TableColumn id="C3" prefWidth="75.0" text="C3" />
+            <TableColumn id="C4" prefWidth="75.0" text="C4" />
+            <TableColumn id="C5" prefWidth="75.0" text="C5" />
+        </columns>
+      </TableView>
+      <Label layoutX="26.0" layoutY="47.0" prefHeight="17.0" prefWidth="41.0" text="Search">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <TextField id="searchTextField" layoutX="70.0" layoutY="43.0" prefHeight="25.0" prefWidth="501.0" promptText="Enter text..." />
+   </children>
+</Pane>

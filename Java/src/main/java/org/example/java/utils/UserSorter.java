@@ -1,0 +1,41 @@
+package org.example.java.utils;
+
+import org.example.java.entity.user.User;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
+public final class UserSorter {
+    private UserSorter(){}
+
+    /**
+     * Sorts {@link User}'s by {@link User#name}.
+     * @param users The {@link List} to be sorted.
+     * @return The sorted {@link List} of {@link User}'s.
+     */
+    public static List<User> sortByName(List<User> users) {
+        users.sort((u1, u2) -> u1.getName().compareTo(u2.getName()));
+        return users;
+    }
+
+    /**
+     * Sorts {@link User}'s by {@link User#age}.
+     * @param users The {@link List} to be sorted.
+     * @return The sorted {@link List} of {@link User}'s.
+     */
+    public static List<User> sortByAge(List<User> users) {
+        users.sort((u1, u2) -> u1.getAge().compareTo(u2.getAge()));
+        return users;
+    }
+
+
+    public static <T, U extends Comparable<? super U>> Optional<T> min(List<T> users, Function<? super T, ? extends U> f){
+        return  users.stream().min(Comparator.comparing(f));
+    }
+
+    public static <U extends Comparable<? super U>> Optional<User> max(List<User> users, Function<User, U> f) {
+       return users.stream().max(Comparator.comparing(f));
+    }
+}
