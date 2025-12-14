@@ -10,10 +10,12 @@ public class HelloController {
     private TextField textField;
     @FXML
     private TableView<Object> tableViewId;
-    private final Repository repository;
+    private Repository repository;
 
-    public HelloController(Repository repository) {
-       this.repository = repository;
+    public HelloController() {}
+
+    public void setRepository(Repository repository) {
+        this.repository = repository;
     }
 
     public void initialize() {
