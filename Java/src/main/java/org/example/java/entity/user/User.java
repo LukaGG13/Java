@@ -1,13 +1,16 @@
 package org.example.java.entity.user;
 
+import org.example.java.entity.interfaces.Searchable;
+
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Abstract class representing the user.
  * @version 1.0
  * @author luka
  */
-public abstract class User {
+public abstract class User implements Searchable {
     private final String name;
     private final Integer age;
 
@@ -55,5 +58,10 @@ public abstract class User {
                 "name='" + name + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    @Override
+    public Set<String> getKeyWord() {
+        return Set.of("Name=" + getName(), "Age=" + getAge(), "User");
     }
 }

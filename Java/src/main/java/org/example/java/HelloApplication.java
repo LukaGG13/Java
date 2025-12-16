@@ -31,15 +31,14 @@ public class HelloApplication extends Application {
         List<Booking> bookings = new ArrayList<>();
         Map<Room, List<Review>> reviews = new HashMap<>();
 
-        Mocker.mockRooms(rooms, 3);
-        Mocker.mockUsers(users, 3);
+        Mocker.mockRooms(rooms, 20);
+        Mocker.mockUsers(users, 20);
 
 
         Repository repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        HelloController helloController = new HelloController();
+        HelloController helloController = new HelloController(repository);
 
-        helloController.setRepository(repository);
         fxmlLoader.setController(helloController);
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("Hello!");

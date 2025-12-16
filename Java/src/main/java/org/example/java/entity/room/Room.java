@@ -1,5 +1,6 @@
 package org.example.java.entity.room;
 
+import org.example.java.entity.interfaces.Searchable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

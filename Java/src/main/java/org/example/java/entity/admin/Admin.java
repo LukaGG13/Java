@@ -1,5 +1,6 @@
 package org.example.java.entity.admin;
 
+import org.example.java.entity.interfaces.Searchable;
 import org.example.java.entity.room.Room;
 import org.example.java.entity.user.User;
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Set;
 
 import static java.lang.IO.println;
 
@@ -15,7 +17,7 @@ import static java.lang.IO.println;
  * @version 1
  * @author luka
  */
-public final class Admin extends User implements AdminInterface{
+public final class Admin extends User implements AdminInterface {
     private static final Logger log = LoggerFactory.getLogger(Admin.class);
     /**
      * Construct a new {@link Admin} object.
@@ -63,6 +65,10 @@ public final class Admin extends User implements AdminInterface{
     @Override
     public Room createRoom(Integer numberOfBeds, BigDecimal pricePerNight) {
         return createRoom(numberOfBeds, pricePerNight, new AdminInputServiceConsole());
+    }
+
+    public Set<String> getKeyWord() {
+        return Set.of("Name=" + getName(), "Age=" + getAge(), "User", "Admin");
     }
 
 }

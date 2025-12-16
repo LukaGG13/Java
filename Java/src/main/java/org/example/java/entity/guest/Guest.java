@@ -1,6 +1,7 @@
 package org.example.java.entity.guest;
 
 import org.example.java.entity.booking.Booking;
+import org.example.java.entity.interfaces.Searchable;
 import org.example.java.entity.review.Review;
 import org.example.java.entity.room.Room;
 import org.example.java.entity.user.User;
@@ -10,13 +11,14 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
+import java.util.Set;
 
 /**
  * Class representing a guest.
  * @version 1
  * @author luka
  */
-public final class Guest extends User {
+public final class Guest extends User implements Searchable {
     private static final Logger log = LoggerFactory.getLogger(Guest.class);
 
     /**
