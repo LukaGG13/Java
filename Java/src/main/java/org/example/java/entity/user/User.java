@@ -1,5 +1,6 @@
 package org.example.java.entity.user;
 
+import javafx.util.Pair;
 import org.example.java.entity.interfaces.Searchable;
 
 import java.util.Objects;
@@ -61,7 +62,7 @@ public abstract class User implements Searchable {
     }
 
     @Override
-    public Set<String> getKeyWord() {
-        return Set.of("Name=" + getName(), "Age=" + getAge(), "User");
+    public Set<Pair<String, String>> getKeyWord() {
+        return Set.of(new Pair<String, String>("Class", "User"), new Pair<String, String>("Name", getName()), new Pair<String, String>("Age", getAge().toString()));
     }
 }

@@ -66,9 +66,4 @@ public final class Admin extends User implements AdminInterface {
     public Room createRoom(Integer numberOfBeds, BigDecimal pricePerNight) {
         return createRoom(numberOfBeds, pricePerNight, new AdminInputServiceConsole());
     }
-
-    public Set<String> getKeyWord() {
-        return Set.of("Name=" + getName(), "Age=" + getAge(), "User", "Admin");
-    }
-
 }

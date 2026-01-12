@@ -3,8 +3,11 @@ module org.example.java {
     requires javafx.fxml;
     requires org.slf4j;
     requires net.datafaker;
+    requires org.junit.jupiter.api;
 
+    opens org.example.java to org.junit.jupiter.engine, javafx.fxml;
+    opens org.example.java.entity.interfaces to org.junit.jupiter.engine;
 
-    opens org.example.java to javafx.fxml;
     exports org.example.java;
+    exports org.example.java.entity.interfaces;
 }

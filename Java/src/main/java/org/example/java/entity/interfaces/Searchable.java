@@ -1,7 +1,9 @@
 package org.example.java.entity.interfaces;
 
+import javafx.util.Pair;
+
 import java.util.Set;
 
 public interface Searchable {
-    Set<String> getKeyWord();
+    Set<Pair<String, String>> getKeyWord();
 }

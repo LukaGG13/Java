@@ -1,11 +1,13 @@
 package org.example.java.entity.room;
 
+import javafx.util.Pair;
 import org.example.java.entity.interfaces.Searchable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Set;
  * @version 1.0
  * @author luka
  */
-public final class Room {
+public final class Room implements Searchable {
     private static final Logger log = LoggerFactory.getLogger(Room.class);
     private final Integer numOfBeds;
     private final Integer sizeInSqrM;
@@ -168,4 +170,27 @@ public final class Room {
                 ", amenities=" + amenities +
                 '}';
     }
+
+    @Override
+    public Set<Pair<String, String>> getKeyWord() {
+        Set<Pair<String, String>> keywords = new HashSet<>();
+
+        // Class identifier
+        keywords.add(new Pair<>("Class", "Room"));
+
+        // Exact field names (matching the class)
+        keywords.add(new Pair<>("numOfBeds", numOfBeds.toString()));
+        keywords.add(new Pair<>("sizeInSqrM", sizeInSqrM.toString()));
+        keywords.add(new Pair<>("pricePerNight", pricePerNight.toString()));
+        keywords.add(new Pair<>("distanceFromCityCenter", distanceFromCityCenter.toString()));
+        keywords.add(new Pair<>("distanceFromBeach", distanceFromBeach.toString()));
+
+        // Amenities
+        amenities.forEach(amenity ->
+                keywords.add(new Pair<>(amenity.name(), amenity.name()))
+        );
+
+        return keywords;
+    }
+
 }

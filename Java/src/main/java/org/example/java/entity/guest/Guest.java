@@ -1,5 +1,6 @@
 package org.example.java.entity.guest;
 
+import javafx.util.Pair;
 import org.example.java.entity.booking.Booking;
 import org.example.java.entity.interfaces.Searchable;
 import org.example.java.entity.review.Review;
@@ -39,6 +40,7 @@ public final class Guest extends User implements Searchable {
         return new Booking(roomToBeBooked, guest, checkIn, checkOut);
     }
 
+    //TODO switch to pair
     public AbstractMap.SimpleEntry<Room, Review> leaveReview(GuestInputService inputService) {
         Room roomToBeReview = inputService.askRoom("Select room to review: ");
 
@@ -51,5 +53,4 @@ public final class Guest extends User implements Searchable {
 
         return new AbstractMap.SimpleEntry<>(roomToBeReview, review);
     }
-
 }
