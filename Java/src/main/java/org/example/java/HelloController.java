@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import org.example.java.entity.interfaces.Searchable;
 import org.example.java.entity.repository.Repository;
+import org.example.java.ui.RepostiryUiAdapter;
 import org.example.java.utils.ControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,10 +37,10 @@ public class HelloController {
     @FXML
     private VBox vBoxForReuslt;
 
-    private final Repository repository;
-    private final static Logger log = LoggerFactory.getLogger(HelloController.class);
+    private final RepostiryUiAdapter repository;
+    private static final Logger log = LoggerFactory.getLogger(HelloController.class);
 
-    public HelloController(Repository repository) {
+    public HelloController(RepostiryUiAdapter repository) {
        this.repository = repository;
     }
 
@@ -55,12 +56,10 @@ public class HelloController {
             return true;
         }
 
-        //todo lock in
         for (var query : searchQueries) {
             var match = false;
             for (var keyWord : o.getKeyWord()) {
                 if ((keyWord.getKey().equals(query.getKey()) || "Any".equals(query.getKey())) && keyWord.getValue().contains(query.getValue())) {
-                    System.out.println(query + " matched " + keyWord);
                     match = true;
                     log.debug("Match for {} with {}", query, keyWord);
                     break;
@@ -79,9 +78,8 @@ public class HelloController {
         filteredResults.setPredicate(o -> matches(o, searchQueries));
 
         errorTextField.setText(searchQueries.toString());
-        //errorTextField.setText("");
         if(filteredResults.isEmpty()) {
-            //errorTextField.setText("Error no result");
+            errorTextField.setText("Error no result");
         }
         displayToVBox(filteredResults);
     }
@@ -113,13 +111,14 @@ public class HelloController {
        errorTextField.setText("");
        classComboBox.setItems(FXCollections.observableArrayList("Class", "User", "Room","Bookings","Reviews"));
        fieldComboBox.setItems(FXCollections.observableArrayList(ControllerUtils.classToFields("")));
-       ObservableList<Searchable> results = FXCollections.observableArrayList();
-       FilteredList<Searchable> filteredResults = new FilteredList<>(results);
+        ObservableList<Searchable> results = repository.getSearchible();
+        results.addAll(repository.getRooms());
+        FilteredList<Searchable> filteredResults = new FilteredList<>(results);
+       //ObservableList<Searchable> results = FXCollections.observableArrayList();
+       //results.setAll(repository.getUsers());
+       //results.addAll(repository.getRooms());
+
        final var setQueries = new HashSet<Pair<String, String>>();
-       results.setAll(repository.getUsers());
-       //results.addAll(repository.getBookings());
-       //results.addAll(repository.getReviews());
-       results.addAll(repository.getRooms());
 
        searchTextField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
            updateSearchQuery(setQueries);

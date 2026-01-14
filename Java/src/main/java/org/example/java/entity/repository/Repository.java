@@ -15,4 +15,5 @@ public interface Repository {
     List<Booking> getBookings();
     Map<Room, List<Review>> getReviews();
     Optional<User> getActiveUser();
+    void addUser(User user);
 }

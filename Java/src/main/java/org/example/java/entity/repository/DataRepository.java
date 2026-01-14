@@ -4,6 +4,8 @@ import org.example.java.entity.booking.Booking;
 import org.example.java.entity.review.Review;
 import org.example.java.entity.room.Room;
 import org.example.java.entity.user.User;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,8 @@ import java.util.Optional;
  * @param reviews {@link List} of {@link Review}'s that can be accessed with {@link #getReviews()}.
  */
 public record DataRepository(Optional<User> activeUser, List<Room> rooms, List<User> users, List<Booking> bookings, Map<Room, List<Review>> reviews) implements Repository {
+
+    private static final Logger log = LoggerFactory.getLogger(DataRepository.class);
 
     public DataRepository {
         Objects.requireNonNull(activeUser, "Active user can't be null");
@@ -51,5 +55,12 @@ public record DataRepository(Optional<User> activeUser, List<Room> rooms, List<U
     @Override
     public Optional<User> getActiveUser() {
         return activeUser;
+    }
+
+    @Override
+    public void addUser(User user) {
+        log.debug("Adding user {}", user);
+        users.add(user);
+        log.debug("User list is now {}", users);
     }
 }
