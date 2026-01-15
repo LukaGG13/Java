@@ -34,11 +34,10 @@ public class HelloApplication extends Application {
         Map<Room, List<Review>> reviews = new HashMap<>();
 
         Mocker.mockRooms(rooms, 20);
-        Mocker.mockUsers(users, 0);
+        Mocker.mockUsers(users, 20);
 
         Repository repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
         RepostiryUiAdapter repostiryUiAdapter = new RepostiryUiAdapter(repository);
-        //TabsController tabsController = new TabsController(repository);
         TabsController tabsController = new TabsController(repostiryUiAdapter);
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("header-tab.fxml"));
         fxmlLoader.setController(tabsController);

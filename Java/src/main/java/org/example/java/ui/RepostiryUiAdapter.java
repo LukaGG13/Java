@@ -43,6 +43,13 @@ public class RepostiryUiAdapter {
         searchableObservableList.add(user);
     }
 
+    public void addRoom(Room room) {
+       log.debug("Adding room to ui adapter {}", room);
+        repository.addRoom(room);
+        roomObservableList.add(room);
+        searchableObservableList.add(room);
+    }
+
     public ObservableList<Room> getRooms() {
         return roomObservableList;
     }

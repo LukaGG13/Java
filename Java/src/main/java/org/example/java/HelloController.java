@@ -10,7 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import org.example.java.entity.interfaces.Searchable;
-import org.example.java.entity.repository.Repository;
 import org.example.java.ui.RepostiryUiAdapter;
 import org.example.java.utils.ControllerUtils;
 import org.slf4j.Logger;
@@ -38,6 +37,7 @@ public class HelloController {
     private VBox vBoxForReuslt;
 
     private final RepostiryUiAdapter repository;
+    private static final String CLASS_DEFAULT = "Class";
     private static final Logger log = LoggerFactory.getLogger(HelloController.class);
 
     public HelloController(RepostiryUiAdapter repository) {
@@ -91,9 +91,10 @@ public class HelloController {
         String selectedClass = classComboBox.getValue();
         String selectedField = fieldComboBox.getValue();
 
-        if (selectedClass != null && !"Class".equals(selectedClass)) {
 
-            query.add(new Pair<>("Class", selectedClass));
+        if (selectedClass != null && !CLASS_DEFAULT.equals(selectedClass)) {
+
+            query.add(new Pair<>(CLASS_DEFAULT, selectedClass));
             if (!searchText.isBlank()) {
                 if (selectedField != null && !"Field".equals(selectedField)) {
                     query.add(new Pair<>(selectedField, searchText));
@@ -109,14 +110,13 @@ public class HelloController {
     @FXML
     void initialize() {
        errorTextField.setText("");
-       classComboBox.setItems(FXCollections.observableArrayList("Class", "User", "Room","Bookings","Reviews"));
+       classComboBox.setItems(FXCollections.observableArrayList(CLASS_DEFAULT, "User", "Room","Bookings","Reviews"));
        fieldComboBox.setItems(FXCollections.observableArrayList(ControllerUtils.classToFields("")));
         ObservableList<Searchable> results = repository.getSearchible();
         results.addAll(repository.getRooms());
         FilteredList<Searchable> filteredResults = new FilteredList<>(results);
-       //ObservableList<Searchable> results = FXCollections.observableArrayList();
-       //results.setAll(repository.getUsers());
-       //results.addAll(repository.getRooms());
+
+        displayToVBox(filteredResults);
 
        final var setQueries = new HashSet<Pair<String, String>>();
 
@@ -136,6 +136,12 @@ public class HelloController {
             filter(filteredResults, setQueries);
         }));
 
-       displayToVBox(filteredResults);
+        results.addListener((javafx.collections.ListChangeListener<Searchable>) change -> {
+            while (change.next()) {
+                if (change.wasAdded() || change.wasRemoved()) {
+                    filter(filteredResults, setQueries);
+                }
+            }
+        });
     }
 }

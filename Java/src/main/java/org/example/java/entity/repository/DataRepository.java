@@ -63,4 +63,11 @@ public record DataRepository(Optional<User> activeUser, List<Room> rooms, List<U
         users.add(user);
         log.debug("User list is now {}", users);
     }
+
+    @Override
+    public void addRoom(Room room) {
+        log.debug("Adding roomj {}", room);
+        rooms.add(room);
+        log.debug("Room list is now {}", room);
+    }
 }

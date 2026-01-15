@@ -21,6 +21,7 @@ public class DefaultMenu implements MenuInterface{
     private Integer chosenOption = choices.size();
     private static final Logger log = LoggerFactory.getLogger(DefaultMenu.class);
     private final Repository repository;
+    private static final String FAIL_MSG = "Try Again";
 
     public DefaultMenu(Repository repository){
         this.repository = repository;
@@ -54,7 +55,7 @@ public class DefaultMenu implements MenuInterface{
                 age = Integer.parseInt(readln("Enter age: "));
                 break;
             } catch (NumberFormatException _) {
-                println("Try again");
+                println(FAIL_MSG);
             }
         }
         return new Admin(name, age);
@@ -68,7 +69,7 @@ public class DefaultMenu implements MenuInterface{
                 age = Integer.parseInt(readln("Enter age: "));
                 break;
             } catch (NumberFormatException _) {
-                println("Try again");
+                println(FAIL_MSG);
             }
         }
         return new Guest(name, age);
@@ -85,7 +86,7 @@ public class DefaultMenu implements MenuInterface{
                     break;
                 }
             } catch (NumberFormatException _) {
-                println("Try again");
+                println(FAIL_MSG);
             }
         }
         return repository.getUsers().get(idx);
