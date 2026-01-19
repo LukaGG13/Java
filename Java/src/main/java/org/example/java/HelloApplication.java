@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.java.controllers.TabsController;
+import org.example.java.database.DatabaseUtils;
 import org.example.java.entity.booking.Booking;
 import org.example.java.entity.repository.DataRepository;
 import org.example.java.entity.repository.Repository;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 public class HelloApplication extends Application {
@@ -25,6 +27,12 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         log.trace("Program started");
         log.info("Program started");
+
+        try {
+            DatabaseUtils.createTables();
+        } catch (SQLException e) {
+            throw new RuntimeException("can't create tables", e);
+        }
 
         Optional<User> activeUser = Optional.empty();
 

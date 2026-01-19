@@ -5,6 +5,7 @@ module org.example.java {
     requires net.datafaker;
     requires org.junit.jupiter.api;
     requires javafx.base;
+    requires java.sql;
     //requires org.example.java;
 
     opens org.example.java to org.junit.jupiter.engine, javafx.fxml;
