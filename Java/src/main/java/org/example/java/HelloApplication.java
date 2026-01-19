@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import org.example.java.controllers.TabsController;
 import org.example.java.database.DatabaseUtils;
 import org.example.java.entity.booking.Booking;
-import org.example.java.entity.repository.DataRepository;
+import org.example.java.entity.repository.DatabaseRepository;
 import org.example.java.entity.repository.Repository;
 import org.example.java.entity.review.Review;
 import org.example.java.entity.room.Room;
@@ -28,12 +28,8 @@ public class HelloApplication extends Application {
         log.trace("Program started");
         log.info("Program started");
 
-        try {
-            DatabaseUtils.createTables();
-        } catch (SQLException e) {
-            throw new RuntimeException("can't create tables", e);
-        }
 
+        /*
         Optional<User> activeUser = Optional.empty();
 
         List<Room> rooms = new ArrayList<>();
@@ -44,7 +40,9 @@ public class HelloApplication extends Application {
         Mocker.mockRooms(rooms, 20);
         Mocker.mockUsers(users, 20);
 
-        Repository repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
+        //Repository repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
+         */
+        Repository repository = new DatabaseRepository();
         RepostiryUiAdapter repostiryUiAdapter = new RepostiryUiAdapter(repository);
         TabsController tabsController = new TabsController(repostiryUiAdapter);
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("header-tab.fxml"));

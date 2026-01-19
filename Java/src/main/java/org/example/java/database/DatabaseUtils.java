@@ -1,5 +1,7 @@
 package org.example.java.database;
 
+import org.example.java.entity.guest.Guest;
+import org.example.java.entity.user.User;
 import org.example.java.exception.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,22 +9,20 @@ import org.slf4j.LoggerFactory;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
 public class DatabaseUtils {
 
-    private static final String SELECT_STUDENTS_QUERY = "SELECT * FROM STUDENTI";
-    private static final String INSERT_NEW_STUDENT_QUERY = "INSERT INTO STUDENTI (IME, PREZIME, JMBAG, DATUM_RODJENJA) VALUES (?, ?, ?, ?)";
-
-    private static final String STUDENT_COLUMN_NAME_ID = "ID";
-    private static final String STUDENT_COLUMN_NAME_FIRST_NAME = "IME";
-    private static final String STUDENT_COLUMN_NAME_LAST_NAME = "PREZIME";
-    private static final String STUDENT_COLUMN_NAME_JMBAG = "JMBAG";
-    private static final String STUDENT_COLUMN_NAME_DATE_OF_BIRTH = "DATUM_RODJENJA";
-    private static final String DATABASE_FILE = "src/main/resources/database.properties";
+    private static final String SELECT_USERS = "SELECT ime, age FROM users";
+    private static final String INSERT_USER = "INSERT INTO users (IME, AGE) VALUES(?,?)";
+    private static final String USER_NAME_COLUMN = "IME";
+    private static final String USER_AGE_COLUMN = "AGE";
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseUtils.class);
+    private static final String DATABASE_FILE = "src/main/resources/database.properties";
 
     public static Connection createConnection() throws DatabaseException, IOException {
         try (var reader = new FileReader(DATABASE_FILE)) {
@@ -49,38 +49,23 @@ public class DatabaseUtils {
         }
     }
 
-    public static void createTables() throws DatabaseException, IOException, SQLException {
-        try (var connection = createConnection()) {
-            log.debug("Creating table users");
-            PreparedStatement preparedStatement = connection.prepareStatement("""
-                    CREATE TABLE IF NOT EXISTS users (
-                          id INT AUTO_INCREMENT PRIMARY KEY,
-                          ime VARCHAR(50) NOT NULL,
-                          age INT NOT NULL
-                    );                    
-                    """);
-            preparedStatement.executeUpdate();
-        }
-    }
-    /*
-    public static List<Student> getAllStudents() throws DatabaseException, IOException {
 
-        List<Student> students = new ArrayList<>();
+    public static List<User> getAllUsers() throws DatabaseException, IOException {
+
+        log.info("Fetching users from db");
+        List<User> users = new ArrayList<>();
         Connection conn = createConnection();
 
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(SELECT_STUDENTS_QUERY);
+        try (var preparedStatement = conn.prepareStatement(SELECT_USERS)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while(rs.next()) {
-                Integer id = rs.getInt(STUDENT_COLUMN_NAME_ID);
-                String firstName = rs.getString(STUDENT_COLUMN_NAME_FIRST_NAME);
-                String lastName = rs.getString(STUDENT_COLUMN_NAME_LAST_NAME);
-                String jmbag = rs.getString(STUDENT_COLUMN_NAME_JMBAG);
-                LocalDate dateOfBirth = rs.getDate(STUDENT_COLUMN_NAME_DATE_OF_BIRTH).toLocalDate();
+                Integer age = rs.getInt(USER_AGE_COLUMN);
+                String name = rs.getString(USER_NAME_COLUMN);
 
-                Student student = new Student(id, firstName, lastName, jmbag, dateOfBirth);
-                students.add(student);
+                //TODO posebna tablica za admin i za guest
+                Guest student = new Guest(name, age);
+                users.add(student);
             }
         }
         catch(SQLException e) {
@@ -89,18 +74,16 @@ public class DatabaseUtils {
 
         closeConnection(conn);
 
-        return students;
+        return users;
     }
 
-    public static void saveNewStudent(Student student) throws DatabaseException, IOException {
+    public static void saveNewUser(User user) throws DatabaseException, IOException {
+        log.info("Adding users into db");
         Connection conn = DatabaseUtils.createConnection();
 
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(INSERT_NEW_STUDENT_QUERY);
-            pstmt.setString(1, student.getIme());
-            pstmt.setString(2, student.getPrezime());
-            pstmt.setString(3, student.getJmbag());
-            pstmt.setDate(4, Date.valueOf(student.getDatumRodjenja()));
+        try (var pstmt = conn.prepareStatement(INSERT_USER)){
+            pstmt.setString(1, user.getName());
+            pstmt.setInt(2, user.getAge());
             pstmt.executeUpdate();
         }
         catch(SQLException e) {
@@ -109,5 +92,5 @@ public class DatabaseUtils {
 
         DatabaseUtils.closeConnection(conn);
     }
-    */
+
 }

@@ -1,0 +1,68 @@
+package org.example.java.entity.repository;
+
+import org.example.java.database.DatabaseHelper;
+import org.example.java.database.DatabaseUtils;
+import org.example.java.entity.booking.Booking;
+import org.example.java.entity.review.Review;
+import org.example.java.entity.room.Room;
+import org.example.java.entity.user.User;
+import org.example.java.exception.DatabaseException;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public class DatabaseRepository implements Repository {
+
+    public DatabaseRepository() {
+        try {
+            DatabaseHelper.createTables();
+        } catch (Exception e) {
+            throw new DatabaseException("Can't create tables", e);
+        }
+    }
+
+    @Override
+    public List<Room> getRooms() {
+        return List.of();
+    }
+
+    @Override
+    public List<User> getUsers() {
+        try {
+            return DatabaseUtils.getAllUsers();
+        } catch (IOException _) {
+            throw  new RuntimeException();
+        }
+    }
+
+    @Override
+    public List<Booking> getBookings() {
+        return List.of();
+    }
+
+    @Override
+    public Map<Room, List<Review>> getReviews() {
+        return Map.of();
+    }
+
+    @Override
+    public Optional<User> getActiveUser() {
+        return Optional.empty();
+    }
+
+    @Override
+    public void addUser(User user) {
+        try {
+            DatabaseUtils.saveNewUser(user);
+        } catch (IOException _) {
+            throw  new RuntimeException();
+        }
+    }
+
+    @Override
+    public void addRoom(Room room) {
+
+    }
+}
