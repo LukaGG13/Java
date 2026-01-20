@@ -25,7 +25,11 @@ public class DatabaseRepository implements Repository {
 
     @Override
     public List<Room> getRooms() {
-        return List.of();
+        try {
+            return DatabaseUtils.getAllRooms();
+        } catch (IOException _) {
+            throw  new RuntimeException();
+        }
     }
 
     @Override
@@ -63,6 +67,10 @@ public class DatabaseRepository implements Repository {
 
     @Override
     public void addRoom(Room room) {
-
+        try {
+            DatabaseUtils.saveNewRoom(room);
+        } catch (IOException _) {
+            throw  new RuntimeException();
+        }
     }
 }
