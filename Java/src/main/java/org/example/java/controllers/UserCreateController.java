@@ -1,14 +1,12 @@
 package org.example.java.controllers;
 
 import javafx.collections.FXCollections;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.example.java.entity.admin.Admin;
 import org.example.java.entity.guest.Guest;
-import org.example.java.entity.repository.Repository;
 import org.example.java.entity.user.User;
-import org.example.java.ui.RepostiryUiAdapter;
+import org.example.java.ui.RepositoryUiAdapter;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -26,10 +24,10 @@ public class UserCreateController {
     @FXML
     private ComboBox<String> roleComboBox;
 
-    private final RepostiryUiAdapter repository;
+    private final RepositoryUiAdapter repository;
     private static final Logger log = LoggerFactory.getLogger(UserCreateController.class);
 
-    public UserCreateController(RepostiryUiAdapter repository) {
+    public UserCreateController(RepositoryUiAdapter repository) {
        this.repository = repository;
     }
 

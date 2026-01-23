@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Class representing a guest.
@@ -32,6 +33,16 @@ public final class Guest extends User implements Searchable {
         super(name, age);
    }
 
+    /**
+     * Constructs a new {@link Guest}.
+     * @param uuid of the {@link Guest}.
+     * @param name The name of the {@link Guest}, as {@link String}.
+     * @param age The age of the {@link Guest}, as {@link Integer}.
+     */
+    public Guest(UUID uuid, String name, Integer age) {
+        log.info("Crated guest whit name:\"{}\" and age {}", name, age);
+        super(uuid, name, age);
+    }
     public Booking bookRoom(GuestInputService inputService) {
         Room roomToBeBooked = inputService.askRoom("Select room to book: ");
         Guest guest = this;

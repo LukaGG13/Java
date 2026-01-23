@@ -65,6 +65,16 @@ public record DataRepository(Optional<User> activeUser, List<Room> rooms, List<U
     }
 
     @Override
+    public void updateUser(User user) {
+
+    }
+
+    @Override
+    public void deleteUser(User user) {
+
+    }
+
+    @Override
     public void addRoom(Room room) {
         log.debug("Adding roomj {}", room);
         rooms.add(room);

@@ -2,7 +2,7 @@ package org.example.java.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.example.java.entity.room.Room;
-import org.example.java.ui.RepostiryUiAdapter;
+import org.example.java.ui.RepositoryUiAdapter;
 
 import java.math.BigDecimal;
 
@@ -17,7 +17,7 @@ public class RoomCreateController {
     @FXML
     private TextField pricePerNightTextField;
 
-    private final RepostiryUiAdapter repository;
+    private final RepositoryUiAdapter repository;
 
     private Room createRoomFromUi() {
         Integer numberOfBeds = numberOfBedsSpinner.getValue();
@@ -40,7 +40,7 @@ public class RoomCreateController {
             (new Alert(Alert.AlertType.ERROR, e.getMessage())).showAndWait();
         }
     }
-    public RoomCreateController(RepostiryUiAdapter repository) {
+    public RoomCreateController(RepositoryUiAdapter repository) {
         this.repository = repository;
     }
     @FXML

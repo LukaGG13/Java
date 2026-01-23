@@ -5,21 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.java.controllers.TabsController;
-import org.example.java.database.DatabaseUtils;
-import org.example.java.entity.booking.Booking;
 import org.example.java.entity.repository.DatabaseRepository;
 import org.example.java.entity.repository.Repository;
-import org.example.java.entity.review.Review;
-import org.example.java.entity.room.Room;
-import org.example.java.entity.user.User;
-import org.example.java.ui.RepostiryUiAdapter;
-import org.example.java.utils.Mocker;
+import org.example.java.ui.RepositoryUiAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
 
 public class HelloApplication extends Application {
     private static final Logger log = LoggerFactory.getLogger(HelloApplication.class);
@@ -43,7 +35,7 @@ public class HelloApplication extends Application {
         //Repository repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
          */
         Repository repository = new DatabaseRepository();
-        RepostiryUiAdapter repostiryUiAdapter = new RepostiryUiAdapter(repository);
+        RepositoryUiAdapter repostiryUiAdapter = new RepositoryUiAdapter(repository);
         TabsController tabsController = new TabsController(repostiryUiAdapter);
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("header-tab.fxml"));
         fxmlLoader.setController(tabsController);

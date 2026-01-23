@@ -10,6 +10,7 @@ module org.example.java {
 
     opens org.example.java to org.junit.jupiter.engine, javafx.fxml;
     opens org.example.java.entity.interfaces to org.junit.jupiter.engine;
+    opens org.example.java.entity.user to javafx.base;
 
     exports org.example.java;
     exports org.example.java.entity.interfaces;

@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Tab;
 import org.example.java.HelloController;
-import org.example.java.ui.RepostiryUiAdapter;
+import org.example.java.ui.RepositoryUiAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +26,9 @@ public class TabsController {
     private static final String CREATE_USER_TAB = "/org/example/java/user-create.fxml";
     private static final String CREATE_ROOM_TAB = "/org/example/java/room-create.fxml";
     private static final Logger log = LoggerFactory.getLogger(TabsController.class);
-    private final RepostiryUiAdapter repository;
+    private final RepositoryUiAdapter repository;
 
-    public TabsController(RepostiryUiAdapter repository){
+    public TabsController(RepositoryUiAdapter repository){
        this.repository = repository;
     }
 

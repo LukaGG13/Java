@@ -66,6 +66,24 @@ public class DatabaseRepository implements Repository {
     }
 
     @Override
+    public void updateUser(User user) {
+        try {
+            DatabaseUtils.updateUser(user);
+        } catch (IOException _) {
+            throw  new RuntimeException();
+        }
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        try {
+            DatabaseUtils.deleteUser(user);
+        } catch (IOException _) {
+            throw  new RuntimeException();
+        }
+    }
+
+    @Override
     public void addRoom(Room room) {
         try {
             DatabaseUtils.saveNewRoom(room);

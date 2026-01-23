@@ -9,23 +9,51 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 
 public class DatabaseUtils {
 
     private DatabaseUtils(){}
 
+    private static final String USER_ID = "ID";
     private static final String USER_NAME_COLUMN = "IME";
     private static final String USER_AGE_COLUMN = "AGE";
-    private static final String SELECT_USERS = "SELECT ime, age FROM users";
-    private static final String INSERT_USER = "INSERT INTO users (IME, AGE) VALUES(?,?)";
+    private static final String SELECT_USERS = "SELECT %s, %s, %s FROM users".formatted(USER_ID, USER_NAME_COLUMN, USER_AGE_COLUMN);
+    private static final String INSERT_USER = "INSERT INTO users (%s, %s) VALUES(?,?)".formatted(USER_NAME_COLUMN, USER_AGE_COLUMN);
+    private static final String UPDATE_USER = "UPDATE users SET %s = ?, %s = ? WHERE %s = ?;".formatted(USER_NAME_COLUMN, USER_AGE_COLUMN, USER_ID);
+    private static final String DELETE_USER = "DELETE FROM users WHERE %s = ?;".formatted(USER_ID);
 
-    private static final String SELECT_ROOMS = "SELECT ID, num_of_beds, size_in_sqr_m, price_per_night, distance_from_city_center, distance_from_beach FROM ROOMS";
+    private static final String ROOM_ID = "ID";
+    private static final String ROOM_NUMBER_OF_BEDS = "num_of_beds";
+    private static final String ROOM_SIZE_IN_SQUARE_METERS = "size_in_sqr_m";
+    private static final String ROOM_PRICE_PER_NIGHT = "price_per_night";
+    private static final String ROOM_DISTANCE_FROM_CITY_CENTER = "distance_from_city_center";
+    private static final String ROOM_DISTANCE_FROM_BEACH = "distance_from_beach";
+
+    private static final String SELECT_ROOMS =
+            "SELECT %s, %s, %s, %s, %s, %s FROM ROOMS"
+                    .formatted(
+                            ROOM_ID,
+                            ROOM_NUMBER_OF_BEDS,
+                            ROOM_SIZE_IN_SQUARE_METERS,
+                            ROOM_PRICE_PER_NIGHT,
+                            ROOM_DISTANCE_FROM_CITY_CENTER,
+                            ROOM_DISTANCE_FROM_BEACH
+                    );
+    private static final String INSERT_ROOM =
+            "INSERT INTO ROOMS (%s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?)"
+                    .formatted(
+                            ROOM_NUMBER_OF_BEDS,
+                            ROOM_SIZE_IN_SQUARE_METERS,
+                            ROOM_PRICE_PER_NIGHT,
+                            ROOM_DISTANCE_FROM_CITY_CENTER,
+                            ROOM_DISTANCE_FROM_BEACH
+                    );
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseUtils.class);
     private static final String DATABASE_FILE = "src/main/resources/database.properties";
@@ -57,20 +85,21 @@ public class DatabaseUtils {
 
 
     public static List<User> getAllUsers() throws DatabaseException, IOException {
-
         log.info("Fetching users from db");
         List<User> users = new ArrayList<>();
-        Connection conn = createConnection();
 
-        try (var preparedStatement = conn.prepareStatement(SELECT_USERS)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
+        try (   var conn = createConnection();
+                var preparedStatement = conn.prepareStatement(SELECT_USERS);
+                var rs = preparedStatement.executeQuery()
+        ) {
             while(rs.next()) {
+                UUID id = UUID.fromString(rs.getString(USER_ID));
                 Integer age = rs.getInt(USER_AGE_COLUMN);
                 String name = rs.getString(USER_NAME_COLUMN);
 
-                //TODO posebna tablica za admin i za guest
-                Guest student = new Guest(name, age);
+                //TODO(skip) posebna tablica za admin i za guest i join i add uuid
+                log.debug("creating user with uuid " + id );
+                Guest student = new Guest(id, name, age);
                 users.add(student);
             }
         }
@@ -78,16 +107,15 @@ public class DatabaseUtils {
             throw new DatabaseException(e);
         }
 
-        closeConnection(conn);
-
         return users;
     }
 
     public static void saveNewUser(User user) throws DatabaseException, IOException {
         log.info("Adding users into db");
-        Connection conn = DatabaseUtils.createConnection();
 
-        try (var pstmt = conn.prepareStatement(INSERT_USER)){
+        try (   var conn = createConnection();
+                var pstmt = conn.prepareStatement(INSERT_USER)){
+            //TODO: insert u guest ili admin table
             pstmt.setString(1, user.getName());
             pstmt.setInt(2, user.getAge());
             pstmt.executeUpdate();
@@ -95,41 +123,74 @@ public class DatabaseUtils {
         catch(SQLException e) {
             throw new DatabaseException(e);
         }
+    }
 
-        DatabaseUtils.closeConnection(conn);
+    public static void updateUser(User user) throws DatabaseException, IOException {
+        log.info("Updating user {} into db", user);
+
+        try (   var conn = createConnection();
+                //TODO: fix
+                var pstmt = conn.prepareStatement(UPDATE_USER)){
+            pstmt.setString(1, user.getName());
+            pstmt.setInt(2, user.getAge());
+            pstmt.setString(3, user.getId().toString());
+            pstmt.executeUpdate();
+        }
+        catch(SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    public static void deleteUser(User user) throws DatabaseException, IOException {
+        log.info("Deleting user {} into db", user);
+
+        try (   var conn = createConnection();
+                var pstmt = conn.prepareStatement(DELETE_USER)){
+            log.debug("delete to string" + pstmt.toString());
+            pstmt.setString(1, user.getId().toString());
+            pstmt.executeUpdate();
+        }
+        catch(SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     public static List<Room> getAllRooms() throws DatabaseException, IOException {
-       try (var conn = DatabaseUtils.createConnection()) {
+        List<Room> rooms = new ArrayList<>();
 
-           List<Room> rooms = new ArrayList<>();
-           try (var pstm = conn.prepareStatement("SELECT id, num_of_beds, size_in_sqr_m, price_per_night, distance_from_city_center, distance_from_beach FROM ROOMS")) {
-               ResultSet rs = pstm.executeQuery();
-
+           try (    var conn = createConnection();
+                    var pstm = conn.prepareStatement(SELECT_ROOMS);
+                    var rs = pstm.executeQuery()
+           ){
                while (rs.next()) {
-                   //TODO svi fileds i dodat cols u stringove i izbuilat query sa string builderom
-                   var price_per_night = rs.getBigDecimal("price_per_night");
-                   var number_of_beds = rs.getInt("num_of_beds");
 
-                   Room room = new Room.RoomBuilder(number_of_beds, price_per_night).build();
+                   //TODO all fields and switch string with string constant variables defined above
+                   var id = rs.getInt(ROOM_ID);
+                   var numberOfBeds = rs.getInt(ROOM_NUMBER_OF_BEDS);
+                   var sizeInSqrM = rs.getInt(ROOM_SIZE_IN_SQUARE_METERS);
+                   var pricePerNight = rs.getBigDecimal(ROOM_PRICE_PER_NIGHT);
+                   var distanceFromCityCenter = rs.getBigDecimal(ROOM_DISTANCE_FROM_CITY_CENTER);
+                   var distanceFromBeach = rs.getBigDecimal(ROOM_DISTANCE_FROM_BEACH);
+
+                   Room room = new Room.RoomBuilder(numberOfBeds, pricePerNight)
+                           .sizeInSqrM(sizeInSqrM)
+                           .distanceFromCityCenter(distanceFromCityCenter)
+                           .distanceFromBeach(distanceFromBeach)
+                           .build();
                    rooms.add(room);
                }
                return rooms;
            } catch (SQLException e) {
                throw new DatabaseException(e);
            }
-       } catch (Exception e) {
-           throw new RuntimeException(e);
-       }
     }
 
     public static void saveNewRoom(Room room) throws DatabaseException, IOException {
         log.info("Adding room into db");
-        Connection conn = DatabaseUtils.createConnection();
 
-        try (var pstmt = conn.prepareStatement(
-                "INSERT INTO ROOMS (num_of_beds, size_in_sqr_m, price_per_night, distance_from_city_center, distance_from_beach) VALUES (?, ?, ?, ?, ?)")) {
-
+        try (   var conn = createConnection();
+                var pstmt = conn.prepareStatement(INSERT_ROOM)
+        ){
             pstmt.setInt(1, room.getNumOfBeds());
             pstmt.setInt(2, room.getSizeInSqrM());
             pstmt.setBigDecimal(3, room.getPricePerNight());
@@ -140,7 +201,5 @@ public class DatabaseUtils {
         } catch(SQLException e) {
             throw new DatabaseException(e);
         }
-
-        DatabaseUtils.closeConnection(conn);
     }
 }

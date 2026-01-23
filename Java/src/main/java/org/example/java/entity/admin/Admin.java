@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.UUID;
 
 import static java.lang.IO.println;
 
@@ -29,6 +30,16 @@ public final class Admin extends User implements AdminInterface {
         super(name, age);
     }
 
+    /**
+     * Construct a new {@link Admin} object.
+     * @param uuid The {@link UUID} of the admin.
+     * @param name The name of the admin, as {@link String}.
+     * @param age The age of the admin, as {@link Integer}.
+     */
+    public Admin(UUID uuid, String name, Integer age) {
+        log.info("Created admin with uuid: \"{}\" name:\"{}\" and age:{}", uuid, name ,age);
+        super(uuid, name, age);
+    }
     /**
      * Creates a room using {@link Room.RoomBuilder}.
      * @param roomBuilder {@link Room.RoomBuilder}.

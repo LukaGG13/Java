@@ -18,12 +18,27 @@ public class DatabaseHelper {
             log.debug("Creating table users");
             var preparedStatement = connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS users (
-                          id INT AUTO_INCREMENT PRIMARY KEY,
-                          ime VARCHAR(50) NOT NULL,
-                          age INT NOT NULL
-                    );                    
+                                      id UUID DEFAULT RANDOM_UUID(),
+                                      ime VARCHAR(50) NOT NULL,
+                                      age INT NOT NULL,
+                                      PRIMARY KEY (id)
+                                  );              
                     """);
             preparedStatement.executeUpdate();
+
+           connection.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS admin (
+                               user_id UUID PRIMARY KEY,
+                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                           );
+                    """).executeUpdate();
+
+            connection.prepareStatement("""
+                           CREATE TABLE IF NOT EXISTS guest (
+                               user_id UUID PRIMARY KEY,
+                               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                           );
+                    """).executeUpdate();
 
             connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS rooms (
