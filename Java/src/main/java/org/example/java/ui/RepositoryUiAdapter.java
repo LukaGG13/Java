@@ -16,7 +16,8 @@ public class RepositoryUiAdapter {
     //TODO: poparvio ovo smece
     final Repository repository;
     final ObservableList<UiComponent> userObservableArray;
-    final ObservableList<Room> roomObservableList;
+    //final ObservableList<UiComponent> roomObservableArray;
+    final ObservableList<UiComponent> observableArray;
     final FilteredList<UiComponent> filteredList;
 
     static final Logger log = LoggerFactory.getLogger(RepositoryUiAdapter.class);
@@ -27,62 +28,66 @@ public class RepositoryUiAdapter {
         this.repository = repository;
 
         userObservableArray = FXCollections.observableArrayList();
+        //roomObservableArray = FXCollections.observableArrayList();
+        observableArray = FXCollections.observableArrayList();
+
         for(var user : repository.getUsers()) {
+            observableArray.add(new UserUiAdapter(user, this::updateUser, this::deleteUser));
             userObservableArray.add(new UserUiAdapter(user, this::updateUser, this::deleteUser));
         }
 
-        roomObservableList = FXCollections.observableArrayList();
-        filteredList = new FilteredList<>(userObservableArray);
-        /*
-        userObservableArray = FXCollections.observableArrayList(repository.getUsers());
-        roomObservableList = FXCollections.observableArrayList(repository.getRooms());
-        searchableObservableList = FXCollections.observableArrayList(repository.getUsers());
-        searchableObservableList.addAll(repository.getRooms());
-         */
-    }
+        for(var room : repository.getRooms()) {
+            //roomObservableArray.add(new RoomView(room));
+            observableArray.add(new RoomView(room));
+        }
 
-    /*
-    public ObservableList<Searchable> getSearchible() {
-       searchableObservableList.setAll(repository.getUsers());
-       searchableObservableList.addAll(repository.getRooms());
-       return searchableObservableList;
+        //filteredList = new FilteredList<>(userObservableArray); //TODO ??
+        filteredList = new FilteredList<>(observableArray); //TODO ??
+        //filteredList.addAll(roomObservableArray);
     }
-    public ObservableList<User> getUsers() {
-       return userObservableArray;
-    }
-    */
 
     public FilteredList<UiComponent> getUiFilterList() {
         return filteredList;
     }
 
-    public void addUser(User user) {
+    public void addUser(User user) { //TODO sinyc misliom da je ovaj prisut s view bolji
         log.debug("Adding user to ui adapter {}", user);
         repository.addUser(user);
-        userObservableArray.add(new UserUiAdapter(user, this::updateUser, this::deleteUser));
+        //userObservableArray.add(new UserUiAdapter(user, this::updateUser, this::deleteUser));
+        observableArray.add(new UserUiAdapter(user, this::updateUser, this::deleteUser));
         filteredList.setPredicate(_ -> true);
     }
 
-    public void deleteUser(User user) {
-        repository.deleteUser(user);
-        //TODO: ostatak cb
+    public void deleteUser(UserUiAdapter userUiAdapter) {
+        repository.deleteUser(userUiAdapter.toUser());
+        observableArray.remove(userUiAdapter);
+        //userObservableArray.remove(userUiAdapter);
     }
 
-    public void updateUser(User user) {
-       repository.updateUser(user);
-       //TODO: ostaloc
+    public void updateUser(UserUiAdapter userUiAdapter) {
+       repository.updateUser(userUiAdapter.toUser());
     }
 
-    public void addRoom(Room room) {
-       log.debug("Adding room to ui adapter {}", room);
-        repository.addRoom(room);
-        roomObservableList.add(room);
+    public void addRoom(RoomView room) { //TODO: sincy
+        log.debug("Adding room to ui adapter {}", room);
+        repository.addRoom(room.toRoom());
+        observableArray.add(room);
+        //roomObservableArray.add(room);
+        filteredList.setPredicate(_ -> true);
         //TODO: change to room adapter kada napravis
         //searchableObservableList.add(room);
     }
 
-    public ObservableList<Room> getRooms() {
-        return roomObservableList;
+    public ObservableList<UiComponent> getUserObservableArray() {
+        return userObservableArray;
     }
+
+    /*
+    public ObservableList<UiComponent> getRooms() {
+        return observableArray;
+        //return roomObservableArray;
+    }
+
+     */
 
 }

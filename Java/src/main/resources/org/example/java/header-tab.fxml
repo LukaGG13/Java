@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.4" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane fx:id="tabePane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab fx:id="searchTab" text="Search">
          <content>
@@ -20,6 +20,11 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="169.0" prefWidth="310.0" />
          </content>
+      </Tab>
+      <Tab fx:id="createReviewTab" text="Create review">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+        </content>
       </Tab>
    </tabs>
 </TabPane>

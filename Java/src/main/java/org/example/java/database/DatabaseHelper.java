@@ -18,13 +18,26 @@ public class DatabaseHelper {
             log.debug("Creating table users");
             var preparedStatement = connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS users (
-                                      id UUID DEFAULT RANDOM_UUID(),
+                                      id UUID,
                                       ime VARCHAR(50) NOT NULL,
                                       age INT NOT NULL,
                                       PRIMARY KEY (id)
                                   );              
                     """);
             preparedStatement.executeUpdate();
+
+            connection.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS reviews (
+                                     ID UUID NOT NULL PRIMARY KEY,
+                                     GUEST_ID UUID NOT NULL,
+                                     REVIEW_TEXT VARCHAR(255) NOT NULL,
+                                     DATE_OF_REVIEW DATE NOT NULL,
+                                     RATING TINYINT NOT NULL,
+                                     CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\s
+                                     FOREIGN KEY (GUEST_ID) REFERENCES guest(USER_ID) ON DELETE CASCADE,
+                                     CHECK (1 <= RATING AND RATING <= 10)
+                    );
+                """).executeUpdate();
 
            connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS admin (
@@ -42,21 +55,24 @@ public class DatabaseHelper {
 
             connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS rooms (
-                        id INT AUTO_INCREMENT PRIMARY KEY,           
-                        num_of_beds INT NOT NULL,                    
-                        size_in_sqr_m INT NOT NULL,                 
-                        price_per_night DECIMAL(10, 2) NOT NULL,     
-                        distance_from_city_center DECIMAL(10, 2) NOT NULL,  
-                        distance_from_beach DECIMAL(10, 2) NOT NULL  
-                    );
-                    """).executeUpdate();
+                                                                                   id UUID NOT NULL PRIMARY KEY,
+                                                                                   num_of_beds INT NOT NULL,
+                                                                                   size_in_sqr_m INT NOT NULL,
+                                                                                   price_per_night DECIMAL(9, 2) NOT NULL,
+                                                                                   distance_from_city_center DECIMAL(9, 2) NOT NULL,
+                                                                                   distance_from_beach DECIMAL(9, 2) NOT NULL,
+                                                                                   amenities ENUM('GYM', 'WIFI', 'POOL', 'PARKING', 'SPA', 'BREAKFAST') ARRAY
+                                                                        );
+                        """).executeUpdate();
 
+            /*
             connection.prepareStatement("""
                         CREATE TABLE IF NOT EXISTS amenities (
                             id INT AUTO_INCREMENT PRIMARY KEY,          
                             name VARCHAR(50) NOT NULL UNIQUE 
                         );
                     """).executeUpdate();
+             */
 
             /*
             connection.prepareStatement("""
@@ -71,6 +87,7 @@ public class DatabaseHelper {
                     """).executeUpdate();
 
              */
+            /*
             connection.prepareStatement("""
                         CREATE TABLE IF NOT EXISTS room_amenities (
                             room_id INT NOT NULL,
@@ -80,6 +97,7 @@ public class DatabaseHelper {
                             FOREIGN KEY (amenity_id) REFERENCES amenities(id) ON DELETE CASCADE
                         );
                     """).executeUpdate();
+             */
         }
     }
 }

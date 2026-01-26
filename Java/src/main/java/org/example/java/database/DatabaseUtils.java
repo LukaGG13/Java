@@ -1,6 +1,8 @@
 package org.example.java.database;
 
+import org.example.java.entity.admin.Admin;
 import org.example.java.entity.guest.Guest;
+import org.example.java.entity.review.Review;
 import org.example.java.entity.room.Room;
 import org.example.java.entity.user.User;
 import org.example.java.exception.DatabaseException;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -24,9 +27,12 @@ public class DatabaseUtils {
     private static final String USER_NAME_COLUMN = "IME";
     private static final String USER_AGE_COLUMN = "AGE";
     private static final String SELECT_USERS = "SELECT %s, %s, %s FROM users".formatted(USER_ID, USER_NAME_COLUMN, USER_AGE_COLUMN);
-    private static final String INSERT_USER = "INSERT INTO users (%s, %s) VALUES(?,?)".formatted(USER_NAME_COLUMN, USER_AGE_COLUMN);
+    private static final String SELECT_USER = SELECT_USERS + "WHERE %s = ?".formatted(USER_ID);
+    private static final String INSERT_USER = "INSERT INTO users (%s, %s, %s) VALUES(?,?,?)".formatted(USER_ID, USER_NAME_COLUMN, USER_AGE_COLUMN);
     private static final String UPDATE_USER = "UPDATE users SET %s = ?, %s = ? WHERE %s = ?;".formatted(USER_NAME_COLUMN, USER_AGE_COLUMN, USER_ID);
     private static final String DELETE_USER = "DELETE FROM users WHERE %s = ?;".formatted(USER_ID);
+    private static final String INSERT_ADMIN = "INSERT INTO admin (USER_ID) VALUES(?)";
+    private static final String INSERT_GUEST = "INSERT INTO guest (USER_ID) VALUES(?)";
 
     private static final String ROOM_ID = "ID";
     private static final String ROOM_NUMBER_OF_BEDS = "num_of_beds";
@@ -34,26 +40,41 @@ public class DatabaseUtils {
     private static final String ROOM_PRICE_PER_NIGHT = "price_per_night";
     private static final String ROOM_DISTANCE_FROM_CITY_CENTER = "distance_from_city_center";
     private static final String ROOM_DISTANCE_FROM_BEACH = "distance_from_beach";
+    private static final String ROOM_AMENITIES = "amenities";
 
     private static final String SELECT_ROOMS =
-            "SELECT %s, %s, %s, %s, %s, %s FROM ROOMS"
+            "SELECT %s, %s, %s, %s, %s, %s, %s FROM ROOMS"
                     .formatted(
                             ROOM_ID,
                             ROOM_NUMBER_OF_BEDS,
                             ROOM_SIZE_IN_SQUARE_METERS,
                             ROOM_PRICE_PER_NIGHT,
                             ROOM_DISTANCE_FROM_CITY_CENTER,
-                            ROOM_DISTANCE_FROM_BEACH
+                            ROOM_DISTANCE_FROM_BEACH,
+                            ROOM_AMENITIES
                     );
     private static final String INSERT_ROOM =
-            "INSERT INTO ROOMS (%s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO ROOMS (%s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?)"
                     .formatted(
+                            ROOM_ID,
                             ROOM_NUMBER_OF_BEDS,
                             ROOM_SIZE_IN_SQUARE_METERS,
                             ROOM_PRICE_PER_NIGHT,
                             ROOM_DISTANCE_FROM_CITY_CENTER,
-                            ROOM_DISTANCE_FROM_BEACH
+                            ROOM_DISTANCE_FROM_BEACH,
+                            ROOM_AMENITIES
                     );
+
+    private static final String REVIEW_ID = "ID";
+    private static final String REVIEW_GUEST_ID = "GUEST_ID";
+    private static final String REVIEW_TEXT = "REVIEW_TEXT";
+    private static final String REVIEW_DATE = "DATE_OF_REVIEW";
+    private static final String REVIEW_RATING = "RATING";
+    private static final String REVIEW_CREATED_AT = "CREATED_AT";
+
+    private static final String SELECT_REVIEWS = "SELECT %s, %s, %s, %s, %s, %s FROM reviews".formatted(REVIEW_ID, REVIEW_GUEST_ID, REVIEW_TEXT, REVIEW_DATE, REVIEW_RATING, REVIEW_CREATED_AT);
+    private static final String INSERT_REVIEW = "INSERT INTO reviews (%s, %s, %s) VALUES(?,?,?)".formatted(REVIEW_ID, REVIEW_GUEST_ID, REVIEW_TEXT);
+
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseUtils.class);
     private static final String DATABASE_FILE = "src/main/resources/database.properties";
@@ -83,6 +104,34 @@ public class DatabaseUtils {
         }
     }
 
+    private static User consturctUserFromResultSet(ResultSet rs) throws SQLException {
+        UUID id = UUID.fromString(rs.getString(USER_ID));
+        Integer age = rs.getInt(USER_AGE_COLUMN);
+        String name = rs.getString(USER_NAME_COLUMN);
+
+        //TODO(skip) posebna tablica za admin i za guest i join i add uuid
+        log.debug("creating user with uuid {}", id );
+        return new Guest(id, name, age);
+    }
+
+    public static User getUserWithUUID(UUID uuid) throws DatabaseException, IOException {
+        log.info("Fetching user from db with uuid:{}", uuid);
+
+        try (   var conn = createConnection();
+                var preparedStatement = conn.prepareStatement(SELECT_USER);
+        ) {
+            preparedStatement.setString(1, uuid.toString());
+            var rs = preparedStatement.executeQuery();
+            if(rs.next()) {
+                return consturctUserFromResultSet(rs);
+            }
+        }
+        catch(SQLException e) {
+            throw new DatabaseException(e);
+        }
+        //TODO: what to do igs throw
+        throw new IllegalArgumentException("User with this UUID doesn't exist");
+    }
 
     public static List<User> getAllUsers() throws DatabaseException, IOException {
         log.info("Fetching users from db");
@@ -93,14 +142,7 @@ public class DatabaseUtils {
                 var rs = preparedStatement.executeQuery()
         ) {
             while(rs.next()) {
-                UUID id = UUID.fromString(rs.getString(USER_ID));
-                Integer age = rs.getInt(USER_AGE_COLUMN);
-                String name = rs.getString(USER_NAME_COLUMN);
-
-                //TODO(skip) posebna tablica za admin i za guest i join i add uuid
-                log.debug("creating user with uuid " + id );
-                Guest student = new Guest(id, name, age);
-                users.add(student);
+                users.add(consturctUserFromResultSet(rs));
             }
         }
         catch(SQLException e) {
@@ -110,15 +152,42 @@ public class DatabaseUtils {
         return users;
     }
 
+    private static void saveNewAdmin(Admin admin) throws DatabaseException, IOException{
+        log.info("Adding admin into db");
+        try ( var conn = createConnection();
+              var pstmt = conn.prepareStatement(INSERT_ADMIN)
+        )  {
+            pstmt.setString(1, admin.getId().toString());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    private static void saveNewGuest(Guest guest) throws DatabaseException, IOException{
+        log.info("Adding guest into db");
+        try ( var conn = createConnection();
+              var pstmt = conn.prepareStatement(INSERT_GUEST)
+        )  {
+            pstmt.setString(1, guest.getId().toString());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
     public static void saveNewUser(User user) throws DatabaseException, IOException {
         log.info("Adding users into db");
 
         try (   var conn = createConnection();
                 var pstmt = conn.prepareStatement(INSERT_USER)){
-            //TODO: insert u guest ili admin table
-            pstmt.setString(1, user.getName());
-            pstmt.setInt(2, user.getAge());
+            pstmt.setString(1, user.getId().toString());
+            pstmt.setString(2, user.getName());
+            pstmt.setInt(3, user.getAge());
             pstmt.executeUpdate();
+
+            if(user instanceof Admin admin) saveNewAdmin(admin);
+            if(user instanceof Guest guest) saveNewGuest(guest);
         }
         catch(SQLException e) {
             throw new DatabaseException(e);
@@ -129,7 +198,6 @@ public class DatabaseUtils {
         log.info("Updating user {} into db", user);
 
         try (   var conn = createConnection();
-                //TODO: fix
                 var pstmt = conn.prepareStatement(UPDATE_USER)){
             pstmt.setString(1, user.getName());
             pstmt.setInt(2, user.getAge());
@@ -146,7 +214,6 @@ public class DatabaseUtils {
 
         try (   var conn = createConnection();
                 var pstmt = conn.prepareStatement(DELETE_USER)){
-            log.debug("delete to string" + pstmt.toString());
             pstmt.setString(1, user.getId().toString());
             pstmt.executeUpdate();
         }
@@ -165,19 +232,25 @@ public class DatabaseUtils {
                while (rs.next()) {
 
                    //TODO all fields and switch string with string constant variables defined above
-                   var id = rs.getInt(ROOM_ID);
+                   var id = UUID.fromString(rs.getString(ROOM_ID));
                    var numberOfBeds = rs.getInt(ROOM_NUMBER_OF_BEDS);
                    var sizeInSqrM = rs.getInt(ROOM_SIZE_IN_SQUARE_METERS);
                    var pricePerNight = rs.getBigDecimal(ROOM_PRICE_PER_NIGHT);
                    var distanceFromCityCenter = rs.getBigDecimal(ROOM_DISTANCE_FROM_CITY_CENTER);
                    var distanceFromBeach = rs.getBigDecimal(ROOM_DISTANCE_FROM_BEACH);
+                   //TODO test
+                   var amenites = rs.getArray(ROOM_AMENITIES);
 
-                   Room room = new Room.RoomBuilder(numberOfBeds, pricePerNight)
+                   var roomBuilder = new Room.RoomBuilder(id, numberOfBeds, pricePerNight)
                            .sizeInSqrM(sizeInSqrM)
                            .distanceFromCityCenter(distanceFromCityCenter)
-                           .distanceFromBeach(distanceFromBeach)
-                           .build();
-                   rooms.add(room);
+                           .distanceFromBeach(distanceFromBeach);
+                   var amentiesResultSet = amenites.getResultSet();
+                   while(amentiesResultSet.next()){
+                       var amenity = Room.Amenity.valueOf(amentiesResultSet.getString(2));
+                       roomBuilder.addAmenity(amenity);
+                   }
+                   rooms.add(roomBuilder.build());
                }
                return rooms;
            } catch (SQLException e) {
@@ -191,15 +264,51 @@ public class DatabaseUtils {
         try (   var conn = createConnection();
                 var pstmt = conn.prepareStatement(INSERT_ROOM)
         ){
-            pstmt.setInt(1, room.getNumOfBeds());
-            pstmt.setInt(2, room.getSizeInSqrM());
-            pstmt.setBigDecimal(3, room.getPricePerNight());
-            pstmt.setBigDecimal(4, room.getDistanceFromCityCenter());
-            pstmt.setBigDecimal(5, room.getDistanceFromBeach());
+            pstmt.setString(1, room.getId().toString());
+            pstmt.setInt(2, room.getNumOfBeds());
+            pstmt.setInt(3, room.getSizeInSqrM());
+            pstmt.setBigDecimal(4, room.getPricePerNight());
+            pstmt.setBigDecimal(5, room.getDistanceFromCityCenter());
+            pstmt.setBigDecimal(6, room.getDistanceFromBeach());
+            //TODO: da manje izgleda ko chat kod
+            Array sqlArray = conn.createArrayOf(
+                    "VARCHAR", // H2 stores ENUM as VARCHAR internally
+                    room.getAmenities()
+                            .stream()
+                            .map(Enum::name)
+                            .toArray(String[]::new)
+            );
+
+            pstmt.setArray(7, sqlArray);
+
 
             pstmt.executeUpdate();
         } catch(SQLException e) {
             throw new DatabaseException(e);
         }
+    }
+
+    public static List<Review> getAllReviews() throws DatabaseException, IOException {
+        log.info("Getting reviews from db");
+        var reviews = new ArrayList<Review>();
+
+        try (var conn = createConnection();
+             var pstms = conn.prepareStatement(SELECT_REVIEWS);
+             var rs = pstms.executeQuery()
+        ) {
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString(REVIEW_ID));
+                UUID guestId = UUID.fromString(rs.getString(REVIEW_GUEST_ID));
+                Guest guest = (Guest) getUserWithUUID(guestId); //TODO: wtf fix this igs zasebno za admin i guest al puno koda
+                String reviewText = rs.getString(REVIEW_TEXT);
+                LocalDate date = rs.getDate(REVIEW_DATE).toLocalDate();
+                Integer rating = rs.getInt(REVIEW_RATING);
+
+               reviews.add(new Review(uuid, guest, reviewText, date, rating));
+            }
+        } catch (SQLException e){
+            throw new DatabaseException(e);
+        }
+        return reviews;
     }
 }

@@ -22,13 +22,14 @@ public class UserUiAdapter implements UiComponent {
     private final TextField tfAge = new TextField();
     private StringProperty name = new SimpleStringProperty();
     private StringProperty age = new SimpleStringProperty();
+    private VBox vbox = null;
 
     private final Button btDelete = new Button("Delete");
     private final Button btSave = new Button("Save");
-    public UserUiAdapter(User user, Consumer<User> update, Consumer<User> delete) {
+    public UserUiAdapter(User user, Consumer<UserUiAdapter> update, Consumer<UserUiAdapter> delete) {
         this.user = user;
-        btSave.setOnAction(_ ->  update.accept(toUser()));
-        btDelete.setOnAction(_ -> delete.accept(toUser()));
+        btSave.setOnAction(_ ->  update.accept(this));
+        btDelete.setOnAction(_ -> delete.accept(this));
 
         name.set(user.getName());
         age.set(user.getAge().toString());
@@ -47,37 +48,44 @@ public class UserUiAdapter implements UiComponent {
 
     @Override
     public VBox display() {
-        var gp = new GridPane();
-        gp.add(new Label("Name"), 0, 0);
-        gp.add(tfName, 1, 0);
+        if (vbox == null || true) {
+            var gp = new GridPane();
+            gp.add(new Label("Name"), 0, 0);
+            gp.add(tfName, 1, 0);
 
-        gp.add(new Label("Age"), 0, 1);
-        gp.add(tfAge, 1, 1);
+            gp.add(new Label("Age"), 0, 1);
+            gp.add(tfAge, 1, 1);
 
-        gp.setHgap(4.0d);
-        gp.setVgap(8.0d);
+            gp.setHgap(4.0d);
+            gp.setVgap(8.0d);
 
-        VBox.setVgrow(gp, Priority.ALWAYS);
-        VBox.setMargin( gp, new Insets(40.0d) );
+            VBox.setVgrow(gp, Priority.ALWAYS);
+            VBox.setMargin( gp, new Insets(40.0d) );
 
-        ButtonBar buttons = new ButtonBar();
+            ButtonBar buttons = new ButtonBar();
 
-        ButtonBar.setButtonData(btSave, ButtonBar.ButtonData.OTHER);
+            ButtonBar.setButtonData(btSave, ButtonBar.ButtonData.OTHER);
 
-        buttons.getButtons().setAll(btDelete, btSave);
-        //buttons.getButtons().add(btDelete);
-        //buttons.getButtons().add(btSave);
-        buttons.setPadding(new Insets(10.0d) );
+            buttons.getButtons().setAll(btDelete, btSave);
+            //buttons.getButtons().add(btDelete);
+            //buttons.getButtons().add(btSave);
+            buttons.setPadding(new Insets(10.0d) );
 
-        return new VBox(
-                gp,
-                new Separator(),
-                buttons
-        );
+            //TODO: chat kaze da je kod garbo idk vjv je
+            vbox = new VBox(
+                    gp,
+                    new Separator(),
+                    buttons
+            );
+            return vbox;
+
+        } else {
+            return vbox;
+        }
     }
 
     @Override
     public Set<Pair<String, String>> getKeyWord() {
-        return Set.of(new Pair<String, String>("Class", "User"), new Pair<String, String>("Name", user.getName()), new Pair<String, String>("Age", user.getAge().toString()));
+        return Set.of(new Pair<>("Class", "User"), new Pair<String, String>("Name", user.getName()), new Pair<String, String>("Age", user.getAge().toString()));
     }
 }

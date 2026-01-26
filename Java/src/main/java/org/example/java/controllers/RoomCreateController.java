@@ -3,6 +3,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.example.java.entity.room.Room;
 import org.example.java.ui.RepositoryUiAdapter;
+import org.example.java.ui.RoomView;
 
 import java.math.BigDecimal;
 
@@ -35,7 +36,7 @@ public class RoomCreateController {
 
     private void addRoom() {
         try {
-            repository.addRoom(createRoomFromUi());
+            repository.addRoom(new RoomView(createRoomFromUi())); //POGLEDAJ KAKO RADI OKOD USER
         } catch (IllegalArgumentException | IllegalStateException e) {
             (new Alert(Alert.AlertType.ERROR, e.getMessage())).showAndWait();
         }
