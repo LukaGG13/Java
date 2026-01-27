@@ -21,23 +21,12 @@ public class DatabaseHelper {
                                       id UUID,
                                       ime VARCHAR(50) NOT NULL,
                                       age INT NOT NULL,
+                                      CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                       PRIMARY KEY (id)
                                   );              
                     """);
             preparedStatement.executeUpdate();
 
-            connection.prepareStatement("""
-                    CREATE TABLE IF NOT EXISTS reviews (
-                                     ID UUID NOT NULL PRIMARY KEY,
-                                     GUEST_ID UUID NOT NULL,
-                                     REVIEW_TEXT VARCHAR(255) NOT NULL,
-                                     DATE_OF_REVIEW DATE NOT NULL,
-                                     RATING TINYINT NOT NULL,
-                                     CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\s
-                                     FOREIGN KEY (GUEST_ID) REFERENCES guest(USER_ID) ON DELETE CASCADE,
-                                     CHECK (1 <= RATING AND RATING <= 10)
-                    );
-                """).executeUpdate();
 
            connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS admin (
@@ -52,6 +41,19 @@ public class DatabaseHelper {
                                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
                            );
                     """).executeUpdate();
+
+            connection.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS reviews (
+                                     ID UUID NOT NULL PRIMARY KEY,
+                                     GUEST_ID UUID NOT NULL,
+                                     REVIEW_TEXT VARCHAR(255) NOT NULL,
+                                     DATE_OF_REVIEW DATE NOT NULL,
+                                     RATING TINYINT NOT NULL,
+                                     CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\s
+                                     FOREIGN KEY (GUEST_ID) REFERENCES guest(USER_ID) ON DELETE CASCADE,
+                                     CHECK (1 <= RATING AND RATING <= 10)
+                    );
+                """).executeUpdate();
 
             connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS rooms (

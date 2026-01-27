@@ -67,7 +67,7 @@ public class UserUiAdapter implements UiComponent {
             ButtonBar.setButtonData(btSave, ButtonBar.ButtonData.OTHER);
 
             buttons.getButtons().setAll(btDelete, btSave);
-            //buttons.getButtons().add(btDelete);
+            //buttons.getButtons().add(btDelete)
             //buttons.getButtons().add(btSave);
             buttons.setPadding(new Insets(10.0d) );
 

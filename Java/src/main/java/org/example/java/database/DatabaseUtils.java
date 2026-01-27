@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 
 public class DatabaseUtils {
@@ -256,6 +257,32 @@ public class DatabaseUtils {
            } catch (SQLException e) {
                throw new DatabaseException(e);
            }
+    }
+
+    public static User getLastCreateUser() throws DatabaseException, IOException {
+        try (   var conn = createConnection();
+                var pstm = conn.prepareStatement("select * from users order by created_at desc limit 1 ;");
+                var rs = pstm.executeQuery();
+        ) {
+
+            if (rs.next()) {
+                return consturctUserFromResultSet(rs);
+            } else {
+                throw new DatabaseException("No user");
+            }
+            /*
+            for (int i = 0; i < 10; i++) {
+                int taskNum = i;
+                executor.submit(() -> {
+                    System.out.println("⚡ Task " + taskNum +
+                            " na " + Thread.currentThread());
+                });
+            }
+
+             */
+        } catch (SQLException e) {
+           throw  new DatabaseException(e);
+        }
     }
 
     public static void saveNewRoom(Room room) throws DatabaseException, IOException {
