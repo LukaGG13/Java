@@ -9,14 +9,16 @@ import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Class representing a room
  * @version 1.0
  * @author luka
  */
-public final class Room implements Searchable {
+public final class Room {
     private static final Logger log = LoggerFactory.getLogger(Room.class);
+    private final UUID uuid;
     private final Integer numOfBeds;
     private final Integer sizeInSqrM;
     private final BigDecimal pricePerNight;
@@ -31,6 +33,7 @@ public final class Room implements Searchable {
      * @author luka
      */
     public static final class RoomBuilder {
+        private final UUID uuid;
         private final Integer numOfBeds;
         private final BigDecimal pricePerNight;
         private Integer sizeInSqrM = 0;
@@ -40,11 +43,25 @@ public final class Room implements Searchable {
 
         /**
          * Constructor for RoomBuilder.
+         * @param uuid The uuid of the room, as {@link UUID}.
+         * @param numOfBeds Number of beds in the room, as {@link Integer}.
+         * @param pricePerNight Price for one night in euros, as {@link BigDecimal}.
+         */
+        public RoomBuilder(UUID uuid, Integer numOfBeds, BigDecimal pricePerNight) {
+            log.info("Created a room builder with number of beds:{} and price per night:{}",numOfBeds, pricePerNight);
+            this.uuid = uuid;
+            this.numOfBeds = numOfBeds;
+            this.pricePerNight = pricePerNight;
+        }
+
+        /**
+         * Constructor for RoomBuilder.
          * @param numOfBeds Number of beds in the room, as {@link Integer}.
          * @param pricePerNight Price for one night in euros, as {@link BigDecimal}.
          */
         public RoomBuilder(Integer numOfBeds, BigDecimal pricePerNight) {
             log.info("Created a room builder with number of beds:{} and price per night:{}",numOfBeds, pricePerNight);
+            this.uuid = UUID.randomUUID();
             this.numOfBeds = numOfBeds;
             this.pricePerNight = pricePerNight;
         }
@@ -103,6 +120,7 @@ public final class Room implements Searchable {
      */
     Room(RoomBuilder roomBuilder) {
         log.info("created new room");
+        this.uuid = roomBuilder.uuid;
         this.numOfBeds = roomBuilder.numOfBeds;
         this.sizeInSqrM = roomBuilder.sizeInSqrM;
         this.pricePerNight = roomBuilder.pricePerNight;
@@ -152,6 +170,14 @@ public final class Room implements Searchable {
     }
 
     /**
+     * Get the id of the room as {@link UUID}.
+     * @return the id of the room as {@link UUID}.
+     */
+    public UUID getId() {
+        return uuid;
+    }
+
+    /**
      * Gets the amenities of the room as {@link EnumSet} of {@link Amenity}'s.
      * @return A {@link EnumSet} of {@link Amenity}'s.
      */
@@ -170,27 +196,4 @@ public final class Room implements Searchable {
                 ", amenities=" + amenities +
                 '}';
     }
-
-    @Override
-    public Set<Pair<String, String>> getKeyWord() {
-        Set<Pair<String, String>> keywords = new HashSet<>();
-
-        // Class identifier
-        keywords.add(new Pair<>("Class", "Room"));
-
-        // Exact field names (matching the class)
-        keywords.add(new Pair<>("numOfBeds", numOfBeds.toString()));
-        keywords.add(new Pair<>("sizeInSqrM", sizeInSqrM.toString()));
-        keywords.add(new Pair<>("pricePerNight", pricePerNight.toString()));
-        keywords.add(new Pair<>("distanceFromCityCenter", distanceFromCityCenter.toString()));
-        keywords.add(new Pair<>("distanceFromBeach", distanceFromBeach.toString()));
-
-        // Amenities
-        amenities.forEach(amenity ->
-                keywords.add(new Pair<>(amenity.name(), amenity.name()))
-        );
-
-        return keywords;
-    }
-
 }

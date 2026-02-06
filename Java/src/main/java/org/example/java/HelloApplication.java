@@ -42,7 +42,7 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("header-tab.fxml"));
         fxmlLoader.setController(tabsController);
 
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();

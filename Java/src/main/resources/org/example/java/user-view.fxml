@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane fx:id="editSvg" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SVGPath fx:id="editSvg" content="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" layoutX="72.0" layoutY="522.0" scaleX="0.05" scaleY="0.05" />
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="7.0" layoutY="96.0" prefHeight="70.0" prefWidth="300.0" text="Name:" textAlignment="CENTER">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="7.0" layoutY="165.0" prefHeight="70.0" prefWidth="300.0" text="Age:" textAlignment="CENTER">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+      <TextField fx:id="nameTextField" layoutX="266.0" layoutY="108.0" prefHeight="47.0" prefWidth="209.0" promptText="name">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="ageTextFiel" layoutX="266.0" layoutY="177.0" prefHeight="47.0" prefWidth="209.0" promptText="age">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </TextField>
+      <Separator layoutX="1.0" layoutY="262.0" prefHeight="9.0" prefWidth="600.0" />
+      <ButtonBar fx:id="buttonBar" layoutX="1.0" layoutY="266.0" prefHeight="139.0" prefWidth="566.0" style="visibility: true;">
+        <buttons>
+          <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="52.0" prefWidth="141.0" style="-fx-border-color: FF0000; -fx-background-color: 000000;" text="Delete">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Button>
+            <Button fx:id="saveButton" layoutX="469.0" layoutY="54.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="141.0" style="visibility: true;" text="Save">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Button>
+        </buttons>
+      </ButtonBar>
+   </children>
+</AnchorPane>

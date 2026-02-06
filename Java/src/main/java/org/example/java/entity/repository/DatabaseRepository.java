@@ -50,6 +50,7 @@ public class DatabaseRepository implements Repository {
 
     @Override
     public Map<Room, List<Review>> getReviews() {
+        //TODO databse igs, za sobe
         return Map.of();
     }
 

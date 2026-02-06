@@ -29,12 +29,14 @@ public record LoginService(Repository repository) {
     }
 
     //TODO implement this class
-    public boolean authorization(AuthorizedTab tab) {
+    //public boolean authorization(AuthorizedTab tab) {
+    public boolean authorization() {
         var premisionLevelOfActiveUser = switch (repository.getActiveUser().get()) {
             case Admin _ -> 0;
             case Guest _ -> 5;
             case null, default -> 10_000;
         };
-        return tab.getAllowedPremisionLevel >= premisionLevelOfActiveUser;
+        return false;
+        //return tab.getAllowedPremisionLevel >= premisionLevelOfActiveUser;
     }
 }
