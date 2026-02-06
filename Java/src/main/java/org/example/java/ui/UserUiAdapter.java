@@ -16,6 +16,7 @@ import org.example.java.ui.interfaces.UiComponent;
 import java.util.Set;
 import java.util.function.Consumer;
 
+//TODO refactor into two classes
 public class UserUiAdapter implements UiComponent {
     private final User user;
     private final TextField tfName = new TextField();

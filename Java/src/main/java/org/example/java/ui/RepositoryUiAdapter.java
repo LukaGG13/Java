@@ -12,6 +12,8 @@ import org.example.java.ui.interfaces.UiComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 public class RepositoryUiAdapter {
     //TODO: poparvio ovo smece
     final Repository repository;
@@ -85,4 +87,8 @@ public class RepositoryUiAdapter {
         return roomObservableList;
     }
 
+    //TODO switch to userUiAdapter
+    public Optional<User> getActiveUser() {
+        return repository.getActiveUser();
+    }
 }

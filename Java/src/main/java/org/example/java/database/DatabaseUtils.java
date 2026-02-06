@@ -146,8 +146,8 @@ public class DatabaseUtils {
 
         try (   var conn = createConnection();
                 var pstmt = conn.prepareStatement(DELETE_USER)){
-            log.debug("delete to string" + pstmt.toString());
             pstmt.setString(1, user.getId().toString());
+            log.debug("delete to string" + pstmt.toString());
             pstmt.executeUpdate();
         }
         catch(SQLException e) {

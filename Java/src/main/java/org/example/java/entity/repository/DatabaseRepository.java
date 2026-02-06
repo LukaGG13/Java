@@ -15,6 +15,8 @@ import java.util.Optional;
 
 public class DatabaseRepository implements Repository {
 
+    private Optional<User> activeUser = Optional.empty();
+
     public DatabaseRepository() {
         try {
             DatabaseHelper.createTables();
@@ -53,7 +55,12 @@ public class DatabaseRepository implements Repository {
 
     @Override
     public Optional<User> getActiveUser() {
-        return Optional.empty();
+        return activeUser;
+    }
+
+    @Override
+    public void setActiveUser(User user) {
+       activeUser = Optional.of(user);
     }
 
     @Override

@@ -15,6 +15,7 @@ public interface Repository {
     List<Booking> getBookings();
     Map<Room, List<Review>> getReviews();
     Optional<User> getActiveUser();
+    void setActiveUser(User user);
     void addUser(User user);
     void updateUser(User user);
     void deleteUser(User user);

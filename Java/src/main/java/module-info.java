@@ -6,11 +6,19 @@ module org.example.java {
     requires org.junit.jupiter.api;
     requires javafx.base;
     requires java.sql;
+    requires jakarta.json.bind;
+    requires org.eclipse.yasson;
+    requires jbcrypt;
+
     //requires org.example.java;
 
-    opens org.example.java to org.junit.jupiter.engine, javafx.fxml;
+    opens org.example.java to org.junit.jupiter.engine, javafx.fxml, jakarta.json.bind;
     opens org.example.java.entity.interfaces to org.junit.jupiter.engine;
-    opens org.example.java.entity.user to javafx.base;
+    //opens org.example.java.entity.user to javafx.base, jakarta.json.bind, org.eclipse.yasson;
+    opens org.example.java.entity.user;
+
+
+
 
     exports org.example.java;
     exports org.example.java.entity.interfaces;

@@ -22,9 +22,13 @@ public class TabsController {
     @FXML
     private Tab createRoomTab;
 
+    @FXML
+    private Tab loginTab;
+
     private static final String HELLO_VIEW_TAB = "/org/example/java/hello-view.fxml";
     private static final String CREATE_USER_TAB = "/org/example/java/user-create.fxml";
     private static final String CREATE_ROOM_TAB = "/org/example/java/room-create.fxml";
+    private static final String LOGIN_TAB = "/org/example/java/login-view.fxml";
     private static final Logger log = LoggerFactory.getLogger(TabsController.class);
     private final RepositoryUiAdapter repository;
 
@@ -37,22 +41,29 @@ public class TabsController {
         loadTab(searchTab, HELLO_VIEW_TAB);
         loadTab(createUserTab, CREATE_USER_TAB);
         loadTab(createRoomTab, CREATE_ROOM_TAB);
+        loadTab(loginTab, LOGIN_TAB);
     }
 
     private void loadTab(Tab tab, String fxmlPath) {
         try {
+            if (repository.getActiveUser().isEmpty() && !tab.equals(loginTab)) return;
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             switch (fxmlPath) {
+                case LOGIN_TAB -> {
+                    var loginController = new LoginController(repository);
+                    loader.setController(loginController);
+                }
                 case HELLO_VIEW_TAB -> {
-                    HelloController helloController = new HelloController(repository);
+                    var helloController = new HelloController(repository);
                     loader.setController(helloController);
                 }
                 case CREATE_USER_TAB -> {
-                    UserCreateController userCreateController = new UserCreateController(repository);
+                    var userCreateController = new UserCreateController(repository);
                     loader.setController(userCreateController);
                 }
                 case CREATE_ROOM_TAB -> {
-                    RoomCreateController roomCreateController = new RoomCreateController(repository);
+                    var roomCreateController = new RoomCreateController(repository);
                     loader.setController(roomCreateController);
                 }
                 case null, default -> throw new IllegalArgumentException("Tab path is invalid");

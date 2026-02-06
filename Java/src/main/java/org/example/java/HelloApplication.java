@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.java.controllers.TabsController;
 import org.example.java.entity.repository.DatabaseRepository;
+import org.example.java.entity.repository.JSONRepository;
 import org.example.java.entity.repository.Repository;
 import org.example.java.ui.RepositoryUiAdapter;
 import org.slf4j.Logger;
@@ -34,7 +35,8 @@ public class HelloApplication extends Application {
 
         //Repository repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
          */
-        Repository repository = new DatabaseRepository();
+        //var repository = new JSONRepository();
+        var repository = new DatabaseRepository();
         RepositoryUiAdapter repostiryUiAdapter = new RepositoryUiAdapter(repository);
         TabsController tabsController = new TabsController(repostiryUiAdapter);
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("header-tab.fxml"));
