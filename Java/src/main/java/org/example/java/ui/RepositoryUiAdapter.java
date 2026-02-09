@@ -25,7 +25,6 @@ public class RepositoryUiAdapter {
     static final Logger log = LoggerFactory.getLogger(RepositoryUiAdapter.class);
 
 
-
     public RepositoryUiAdapter(Repository repository){
         this.repository = repository;
 
@@ -95,5 +94,10 @@ public class RepositoryUiAdapter {
     //TODO switch to userUiAdapter
     public Optional<User> getActiveUser() {
         return repository.getActiveUser();
+    }
+
+
+    public Repository toRepository() {
+        return repository;
     }
 }

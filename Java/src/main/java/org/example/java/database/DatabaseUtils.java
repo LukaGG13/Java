@@ -27,8 +27,14 @@ public class DatabaseUtils {
     private static final String USER_ID = "ID";
     private static final String USER_NAME_COLUMN = "IME";
     private static final String USER_AGE_COLUMN = "AGE";
+    private static final String GUEST_ID = "USER_ID";
+    private static final String ADMIN_ID = "USER_ID";
     private static final String SELECT_USERS = "SELECT %s, %s, %s FROM users".formatted(USER_ID, USER_NAME_COLUMN, USER_AGE_COLUMN);
     private static final String SELECT_USER = SELECT_USERS + "WHERE %s = ?".formatted(USER_ID);
+    private static final String SELECT_GUEST = SELECT_USER + "JOIN GUESTS ON %s = %s".formatted(USER_ID, GUEST_ID);
+    private static final String SELECT_ADMIN = SELECT_USER + "JOIN ADMIN ON %s = %s".formatted(USER_ID, ADMIN_ID);
+    private static final String CHECK_IF_USER_IS_GUEST = "SELECT %s FROM GUEST WHERE %s = ?".formatted(GUEST_ID, GUEST_ID);
+    private static final String CHECK_IF_USER_IS_ADMIN = "SELECT %s FROM ADMIN WHERE %s = ?".formatted(ADMIN_ID, ADMIN_ID);
     private static final String INSERT_USER = "INSERT INTO users (%s, %s, %s) VALUES(?,?,?)".formatted(USER_ID, USER_NAME_COLUMN, USER_AGE_COLUMN);
     private static final String UPDATE_USER = "UPDATE users SET %s = ?, %s = ? WHERE %s = ?;".formatted(USER_NAME_COLUMN, USER_AGE_COLUMN, USER_ID);
     private static final String DELETE_USER = "DELETE FROM users WHERE %s = ?;".formatted(USER_ID);
@@ -110,8 +116,17 @@ public class DatabaseUtils {
         Integer age = rs.getInt(USER_AGE_COLUMN);
         String name = rs.getString(USER_NAME_COLUMN);
 
-        //TODO(skip) posebna tablica za admin i za guest i join i add uuid
-        log.debug("creating user with uuid {}", id );
+        try(var conn = createConnection();
+            var pstsm = conn.prepareStatement(CHECK_IF_USER_IS_ADMIN)
+        ) {
+            pstsm.setString(1, id.toString());
+            var adminRs = pstsm.executeQuery();
+            log.debug("creating admin with uuid {}", id );
+            if (adminRs.next()) return new Admin(id, name, age);
+        } catch(IOException _) {
+            throw new DatabaseException("Can't connect to database");
+        }
+        log.debug("creating guest with uuid {}", id );
         return new Guest(id, name, age);
     }
 

@@ -64,4 +64,14 @@ public final class Guest extends User implements Searchable {
 
         return new AbstractMap.SimpleEntry<>(roomToBeReview, review);
     }
+
+
+    /**
+     * Returns the string representation of the {@link Guest} object.
+     * @return Returns the string representation of the {@link Guest} object.
+     */
+    @Override
+    public String toString(){
+        return super.toString() + " guest";
+    }
 }

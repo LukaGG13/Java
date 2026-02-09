@@ -25,6 +25,7 @@ public class Main {
 
     //TODO java doc i logs
 
+
     static void main() {
         log.trace("Program started");
         log.info("Program started");

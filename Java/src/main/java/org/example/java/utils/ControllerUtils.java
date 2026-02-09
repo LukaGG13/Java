@@ -12,6 +12,8 @@ public class ControllerUtils {
             "Review", List.of("Field", "Guest", "Message", "Date", "Rating")
     );
 
+
+    //TODO: what the helly remove this usage mislim da se moze zamjenit sa get keywords
     public static List<String> classToFields(String className) {
         return classToFieldLookUp.getOrDefault(className, List.of("Field"));
     }

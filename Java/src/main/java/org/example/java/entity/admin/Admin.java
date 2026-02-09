@@ -69,6 +69,15 @@ public final class Admin extends User implements AdminInterface {
         return roomBuilder;
     }
 
+    /**
+     * Returns the string representation of the {@link Admin} object.
+     * @return Returns the string representation of the {@link Admin} object.
+     */
+    @Override
+    public String toString(){
+        return super.toString() + " admin";
+    }
+
     public <T extends AdminInputService> Room createRoom(Integer numberOfBeds, BigDecimal pricePerNight, T inputService ) {
         return buildRoom(new Room.RoomBuilder(numberOfBeds, pricePerNight), inputService).build();
     }

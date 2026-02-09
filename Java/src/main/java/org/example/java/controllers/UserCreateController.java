@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import org.example.java.entity.admin.Admin;
 import org.example.java.entity.guest.Guest;
 import org.example.java.entity.user.User;
+import org.example.java.files.PasswordUtils;
 import org.example.java.ui.RepositoryUiAdapter;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ public class UserCreateController {
 
     @FXML
     private TextField nameTextField;
+
+    @FXML
+    private PasswordField passwordField;
 
     @FXML
     private ComboBox<String> roleComboBox;
@@ -44,6 +48,8 @@ public class UserCreateController {
     private void enterButtonPressed() {
         try {
             User user = constructUserFromUi();
+            var password = passwordField.getText();
+            PasswordUtils.savePassword(user.getId(), password);
             repository.addUser(user);
         } catch (IllegalArgumentException e) {
             log.error("Incorrect arguments in form", e);
