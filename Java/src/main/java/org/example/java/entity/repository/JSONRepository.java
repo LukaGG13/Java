@@ -74,4 +74,19 @@ public class JSONRepository implements Repository {
     public void addRoom(Room room) {
         roomJsonUtils.save(room);
     }
+
+    @Override
+    public void addBooking(Booking booking) {
+
+    }
+
+    @Override
+    public void deleteBooking(Booking booking) {
+
+    }
+
+    @Override
+    public void updateBooking(Booking booking) {
+
+    }
 }

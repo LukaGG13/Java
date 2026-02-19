@@ -40,11 +40,11 @@ public class LoginController {
                 loginService.login(name, password);
                 userNameTextField.setText("");
                 passwordTextField.setText("");
+                //TODO: maknuo sam privremeno jel mi se neda svaki put
+                //(new Alert(Alert.AlertType.INFORMATION, "Logged in as " + repository.getActiveUser())).showAndWait();
             } catch (RuntimeException e) {
                 (new Alert(Alert.AlertType.ERROR, e.getMessage())).showAndWait();
-                return;
             }
-            (new Alert(Alert.AlertType.INFORMATION, "Logged in as " + repository.getActiveUser())).showAndWait();
         }
 
         @FXML

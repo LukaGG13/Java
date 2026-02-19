@@ -15,9 +15,9 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <ComboBox fx:id="chooseUserComboBox" layoutX="36.0" layoutY="63.0" prefWidth="150.0" />
-      <TextArea fx:id="reviewTextArea" layoutX="36.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
-      <Button fx:id="saveReviewButton" layoutX="36.0" layoutY="318.0" mnemonicParsing="false" text="Save" />
+      <ComboBox fx:id="chooseUserComboBox" layoutX="36.0" layoutY="63.0" prefHeight="50.0" prefWidth="185.0" />
+      <TextArea fx:id="reviewTextArea" layoutX="36.0" layoutY="152.0" prefHeight="200.0" prefWidth="200.0" />
+      <Button fx:id="saveReviewButton" layoutX="36.0" layoutY="361.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Save" />
       <ChoiceBox fx:id="choiceBox" layoutX="421.0" layoutY="63.0" prefWidth="150.0" />
    </children>
 </Pane>

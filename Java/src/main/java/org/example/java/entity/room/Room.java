@@ -1,15 +1,13 @@
 package org.example.java.entity.room;
 
 import javafx.util.Pair;
+import jdk.jshell.spi.ExecutionControl;
 import org.example.java.entity.interfaces.Searchable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class representing a room
@@ -24,6 +22,7 @@ public final class Room {
     private final BigDecimal pricePerNight;
     private final BigDecimal distanceFromCityCenter;
     private final BigDecimal distanceFromBeach;
+    private final Integer roomNumber;
     public enum Amenity {GYM, WIFI, POOL, PARKING, SPA, BREAKFAST;}
     private final Set<Amenity> amenities;
 
@@ -40,6 +39,7 @@ public final class Room {
         private BigDecimal distanceFromCityCenter =  new BigDecimal(0);
         private BigDecimal distanceFromBeach = new BigDecimal(0);
         private final EnumSet<Amenity> amenities = EnumSet.noneOf(Amenity.class);
+        private Integer roomNumber = 101;
 
         /**
          * Constructor for RoomBuilder.
@@ -106,6 +106,16 @@ public final class Room {
         }
 
         /**
+         * Sets the room number.
+         * @param roomNumber as {@link Integer}.
+         * @return The current {@link RoomBuilder} for builder pattern.
+         */
+        public RoomBuilder roomNumber(Integer roomNumber) {
+            this.roomNumber = roomNumber;
+            return this;
+        }
+
+        /**
          * Build method for builder pattern.
          * @return A new {@link Room} object.
          */
@@ -127,6 +137,7 @@ public final class Room {
         this.distanceFromCityCenter = roomBuilder.distanceFromCityCenter;
         this.distanceFromBeach = roomBuilder.distanceFromBeach;
         this.amenities = roomBuilder.amenities;
+        this.roomNumber = roomBuilder.roomNumber;
     }
 
     /**
@@ -170,11 +181,19 @@ public final class Room {
     }
 
     /**
-     * Get the id of the room as {@link UUID}.
-     * @return the id of the room as {@link UUID}.
+     * Get the id of the {@link Room} as {@link UUID}.
+     * @return the id of the {@link Room} as {@link UUID}.
      */
     public UUID getId() {
         return uuid;
+    }
+
+    /**
+     * Gets the number of the {@link Room} as{@link Integer}.
+     * @return the number of the {@link Room} as {@link Integer}.
+     */
+    public Integer getRoomNumber() {
+        return roomNumber;
     }
 
     /**
@@ -183,6 +202,17 @@ public final class Room {
      */
     public Set<Amenity> getAmenities() {
         return amenities;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Room room)) return false;
+        return Objects.equals(uuid, room.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 
     @Override

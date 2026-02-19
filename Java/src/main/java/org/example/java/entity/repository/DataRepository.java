@@ -85,4 +85,24 @@ public record DataRepository(Optional<User> activeUser, List<Room> rooms, List<U
         rooms.add(room);
         log.debug("Room list is now {}", room);
     }
+
+    @Override
+    public void addBooking(Booking booking) {
+        log.debug("Adding booking {}", booking);
+        bookings.add(booking);
+        log.debug("Booking list is now {}", bookings);
+    }
+
+    @Override
+    public void deleteBooking(Booking booking) {
+        log.debug("Deleting booking {}", booking);
+        bookings.remove(booking);
+        log.debug("Booking list is now {}", bookings);
+    }
+
+    @Override
+    public void updateBooking(Booking booking) {
+        log.debug("Updating booking {}", booking);
+        // For in-memory data structure, we would need to find and replace
+    }
 }

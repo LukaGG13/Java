@@ -43,6 +43,19 @@ public class Main {
 
         Repository repository = new DataRepository(activeUser, rooms, users, bookings, reviews);
 
+        Runnable oneArg = () -> {
+            System.out.println("vibes");
+            System.out.println("i am feeling the vibes");
+        };
+
+        //oneArg.run();
+
+        Integer i = 5;
+        var rez = switch(i) {
+            case Integer l when l > 5 -> 10;
+            case Integer l when l <= 5 -> l;
+            case null, default -> -1;
+        };
         boolean exitProgram = false;
         while(!exitProgram){
             MenuInterface menu = switch (activeUser.orElse(null)) {

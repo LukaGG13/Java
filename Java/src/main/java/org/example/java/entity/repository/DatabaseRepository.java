@@ -45,7 +45,11 @@ public class DatabaseRepository implements Repository {
 
     @Override
     public List<Booking> getBookings() {
-        return List.of();
+        try {
+            return DatabaseUtils.getAllBookings();
+        } catch (IOException _) {
+            throw new RuntimeException();
+        }
     }
 
     @Override
@@ -97,6 +101,33 @@ public class DatabaseRepository implements Repository {
             DatabaseUtils.saveNewRoom(room);
         } catch (IOException _) {
             throw  new RuntimeException();
+        }
+    }
+
+    @Override
+    public void addBooking(Booking booking) {
+        try {
+            DatabaseUtils.saveNewBooking(booking);
+        } catch (IOException _) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public void deleteBooking(Booking booking) {
+        try {
+            DatabaseUtils.deleteBooking(booking);
+        } catch (IOException _) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public void updateBooking(Booking booking) {
+        try {
+            DatabaseUtils.updateBooking(booking);
+        } catch (IOException _) {
+            throw new RuntimeException();
         }
     }
 }

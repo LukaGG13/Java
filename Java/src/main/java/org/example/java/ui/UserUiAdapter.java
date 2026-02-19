@@ -13,10 +13,15 @@ import org.example.java.entity.guest.Guest;
 import org.example.java.entity.user.User;
 import org.example.java.ui.interfaces.UiComponent;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
 //TODO refactor into two classes
+
+/**
+ * Class for grooping edit svae and button actions. Together
+ */
 public class UserUiAdapter implements UiComponent {
     private final User user;
     private final TextField tfName = new TextField();
@@ -33,13 +38,13 @@ public class UserUiAdapter implements UiComponent {
         btDelete.setOnAction(_ -> delete.accept(this));
 
         name.set(user.getName());
-        age.set(user.getAge().toString());
+        age.set(user.getAge().toString()); //TODO: lose ime
 
         tfName.textProperty().bindBidirectional(name);
         tfAge.textProperty().bindBidirectional(age);
     }
 
-    User toUser() {
+    public User toUser() {
         return switch (user) {
             case Admin _ -> new Admin(user.getId(), name.get(), Integer.valueOf(age.get()));
             case Guest _ -> new Guest(user.getId(), name.get(), Integer.valueOf(age.get()));
@@ -85,8 +90,27 @@ public class UserUiAdapter implements UiComponent {
         }
     }
 
+    public StringProperty getNameBinding() {
+       return name;
+    }
+
+    public StringProperty getAgeBinding() {
+       return age;
+    }
+
     @Override
     public Set<Pair<String, String>> getKeyWord() {
         return Set.of(new Pair<>("Class", "User"), new Pair<String, String>("Name", user.getName()), new Pair<String, String>("Age", user.getAge().toString()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UserUiAdapter that)) return false;
+        return Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(user);
     }
 }

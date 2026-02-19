@@ -9,12 +9,18 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.example.java.HelloController;
 import org.example.java.components.AuthorizedTab;
+import org.example.java.entity.booking.Booking;
+import org.example.java.entity.room.Room;
 import org.example.java.services.LoginService;
+import org.example.java.ui.BookingUiAdapter;
 import org.example.java.ui.RepositoryUiAdapter;
+import org.example.java.ui.RoomUiAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.UUID;
 
 public class TabsController {
 
@@ -38,10 +44,14 @@ public class TabsController {
     @FXML
     private Tab loginTab;
 
+    @FXML
+    private Tab createBookingTab;
+
     private static final String HELLO_VIEW_TAB = "/org/example/java/hello-view.fxml";
     private static final String CREATE_USER_TAB = "/org/example/java/user-create.fxml";
     private static final String CREATE_ROOM_TAB = "/org/example/java/room-create.fxml";
     private static final String CREATE_REVIEW_TAB = "/org/example/java/review-create.fxml";
+    private static final String CREATE_BOOKING_TAB = "/org/example/java/booking-create.fxml" ;
     private static final String LOGIN_TAB = "/org/example/java/login-view.fxml";
     private static final Logger log = LoggerFactory.getLogger(TabsController.class);
     private final RepositoryUiAdapter repository; //TODO: temp fix tech dept
@@ -138,6 +148,13 @@ public class TabsController {
         );
         loadAuthorizedTab(review, CREATE_REVIEW_TAB);
 
+        AuthorizedTab booking = new AuthorizedTab(
+                createBookingTab.getText(),
+                createBookingTab,
+                LoginService.AuthorizationLevelOfRole.GUEST.getAuthorizationLevel()
+        );
+        loadAuthorizedTab(booking, CREATE_BOOKING_TAB);
+
         AuthorizedTab room = new AuthorizedTab(
                 createRoomTab.getText(),
                 createRoomTab,
@@ -156,6 +173,7 @@ public class TabsController {
                 login,
                 search,
                 review,
+                booking,
                 room,
                 user
         );
@@ -207,12 +225,27 @@ public class TabsController {
                     loader.setController(userCreateController);
                 }
                 case CREATE_ROOM_TAB -> {
-                    var roomCreateController = new RoomCreateController(repository);
+                    /*
+                    var roomCreateController = new RoomCreateController(
+                            () -> RoomUiAdapter.of(new Room.RoomBuilder(2, new BigDecimal(100)).build(), repository::updateRoom, repository::deleteRoom),
+                            repository::addRoom
+                    );
+                    */
+                     //roomCreateController = new RoomCreateController(room -> RoomUiAdapter.of(room, repository::updateRoom, repository::deleteRoom), repository::addRoom);
+                    RoomCreateController roomCreateController = new RoomCreateController(room -> RoomUiAdapter.of(room, repository::updateRoom, repository::deleteRoom), repository::addRoom);
                     loader.setController(roomCreateController);
                 }
                 case CREATE_REVIEW_TAB -> {
                     ReviewCreateController reviewCreateController = new ReviewCreateController(repository);
                     loader.setController(reviewCreateController);
+                }
+                case CREATE_BOOKING_TAB -> {
+                    BookingCreateController bookingCreateController = new BookingCreateController(
+                            repository,
+                            booking -> BookingUiAdapter.of(booking, repository::updateBooking, repository::deleteBooking),
+                            repository::addBooking
+                    );
+                    loader.setController(bookingCreateController);
                 }
                 case null, default -> throw new IllegalArgumentException("Tab path is invalid");
 

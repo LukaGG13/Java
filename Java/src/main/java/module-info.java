@@ -9,6 +9,7 @@ module org.example.java {
     requires jakarta.json.bind;
     requires org.eclipse.yasson;
     requires jbcrypt;
+    requires jdk.jshell;
 
     //requires org.example.java;
 
@@ -24,4 +25,6 @@ module org.example.java {
     exports org.example.java.entity.interfaces;
     exports org.example.java.controllers;
     opens org.example.java.controllers to javafx.fxml, org.junit.jupiter.engine;
+    opens org.example.java.components to javafx.fxml;
+    exports org.example.java.components;
 }

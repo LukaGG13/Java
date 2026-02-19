@@ -1,27 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!--<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.java.HelloController"> -->
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="970.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Label layoutX="26.0" layoutY="47.0" prefHeight="17.0" prefWidth="41.0" text="Search">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font>
-      </Label>
-      <ComboBox fx:id="classComboBox" layoutX="74.0" layoutY="43.0" prefHeight="25.0" prefWidth="84.0" promptText="Class" />
-      <ComboBox fx:id="fieldComboBox" layoutX="165.0" layoutY="43.0" prefHeight="25.0" prefWidth="84.0" promptText="Field" />
-      <TextField fx:id="searchTextField" layoutX="255.0" layoutY="43.0" prefHeight="25.0" prefWidth="316.0" promptText="Enter text..." />
-      <Label fx:id="errorTextField" layoutX="26.0" layoutY="75.0" prefHeight="17.0" prefWidth="546.0" text="ERROR..." textFill="RED" />
-      <VBox fx:id="vBoxForReuslt" layoutX="27.0" layoutY="110.0" prefHeight="200.0" prefWidth="546.0" />
-      <VBox fx:id="lastCreatedUser" layoutX="605.0" layoutY="68.0" prefHeight="231.0" prefWidth="276.0" style="-fx-background-color: fff2b2;" />
-      <Label layoutX="605.0" layoutY="48.0" prefHeight="17.0" prefWidth="132.0" text="Last created user" />
-   </children>
-</Pane>
+    <top>
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <Label text="Search">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="classComboBox" prefWidth="100.0" promptText="Class" />
+                        <ComboBox fx:id="fieldComboBox" prefWidth="100.0" promptText="Field" />
+                        <TextField fx:id="searchTextField" promptText="Enter text..." HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+                <Label fx:id="errorTextField" text="ERROR..." textFill="RED" />
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+    </top>
+
+    <right>
+        <VBox spacing="5.0" BorderPane.alignment="TOP_CENTER">
+            <children>
+                <Label text="Last created user" />
+                <VBox fx:id="lastCreatedUser" prefHeight="231.0" prefWidth="276.0" style="-fx-background-color: fff2b2;" />
+            </children>
+            <padding>
+                <Insets left="10.0" right="20.0" />
+            </padding>
+        </VBox>
+    </right>
+
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+            <content>
+                <VBox fx:id="vBoxForReuslt" spacing="5.0" style="-fx-background-color: white;" />
+            </content>
+            <BorderPane.margin>
+                <Insets bottom="20.0" left="20.0" />
+            </BorderPane.margin>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

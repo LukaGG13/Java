@@ -148,16 +148,6 @@ public class HelloController {
             }
         });
 
-        /*
-        try {
-            vt.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-         */
-        //} catch (Exception _){}
-
        errorTextField.setText("");
        classComboBox.setItems(FXCollections.observableArrayList(CLASS_DEFAULT, "User", "Room","Bookings","Reviews"));
        fieldComboBox.setItems(FXCollections.observableArrayList(ControllerUtils.classToFields("")));

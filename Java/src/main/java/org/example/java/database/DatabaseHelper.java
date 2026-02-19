@@ -57,16 +57,28 @@ public class DatabaseHelper {
 
             connection.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS rooms (
-                                                                                   id UUID NOT NULL PRIMARY KEY,
-                                                                                   num_of_beds INT NOT NULL,
-                                                                                   size_in_sqr_m INT NOT NULL,
-                                                                                   price_per_night DECIMAL(9, 2) NOT NULL,
-                                                                                   distance_from_city_center DECIMAL(9, 2) NOT NULL,
-                                                                                   distance_from_beach DECIMAL(9, 2) NOT NULL,
-                                                                                   amenities ENUM('GYM', 'WIFI', 'POOL', 'PARKING', 'SPA', 'BREAKFAST') ARRAY
+                          id UUID NOT NULL PRIMARY KEY,
+                          num_of_beds INT NOT NULL,
+                          size_in_sqr_m INT NOT NULL,
+                          price_per_night DECIMAL(9, 2) NOT NULL,
+                          distance_from_city_center DECIMAL(9, 2) NOT NULL,
+                          distance_from_beach DECIMAL(9, 2) NOT NULL,
+                          room_number INT NOT NULL,
+                          amenities ENUM('GYM', 'WIFI', 'POOL', 'PARKING', 'SPA', 'BREAKFAST') ARRAY
                                                                         );
                         """).executeUpdate();
 
+            connection.prepareStatement("""
+                    CREATE TABLE IF NOT EXISTS bookings (
+                    id UUID NOT NULL PRIMARY KEY,
+                    room_id UUID NOT NULL,
+                    user_id UUID NOT NULL,
+                    check_in DATE NOT NULL,
+                    check_out DATE NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                    FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
+                        );
+                    """).executeUpdate();
             /*
             connection.prepareStatement("""
                         CREATE TABLE IF NOT EXISTS amenities (

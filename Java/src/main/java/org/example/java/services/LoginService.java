@@ -42,7 +42,7 @@ public record LoginService(Repository repository) {
         if (resultList.size() > 1) throw new RuntimeException("what the hleyyl ovo se nije smelo dogodit"); //TODO enforce unique in db
 
         var user = resultList.getFirst();
-        if (authentication(user, password)) throw new IllegalStateException("Passowrd dont match"); //TODO: coustom
+        if (!authentication(user, password)) throw new IllegalStateException("Passowrd dont match"); //TODO: coustom
 
         log.debug("Logg in succeful login in as user: {}", user);
         repository.setActiveUser(user);

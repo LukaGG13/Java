@@ -1,6 +1,7 @@
 package org.example.java.database;
 
 import org.example.java.entity.admin.Admin;
+import org.example.java.entity.booking.Booking;
 import org.example.java.entity.guest.Guest;
 import org.example.java.entity.review.Review;
 import org.example.java.entity.room.Room;
@@ -13,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -30,7 +32,7 @@ public class DatabaseUtils {
     private static final String GUEST_ID = "USER_ID";
     private static final String ADMIN_ID = "USER_ID";
     private static final String SELECT_USERS = "SELECT %s, %s, %s FROM users".formatted(USER_ID, USER_NAME_COLUMN, USER_AGE_COLUMN);
-    private static final String SELECT_USER = SELECT_USERS + "WHERE %s = ?".formatted(USER_ID);
+    private static final String SELECT_USER = SELECT_USERS + " WHERE %s = ?".formatted(USER_ID);
     private static final String SELECT_GUEST = SELECT_USER + "JOIN GUESTS ON %s = %s".formatted(USER_ID, GUEST_ID);
     private static final String SELECT_ADMIN = SELECT_USER + "JOIN ADMIN ON %s = %s".formatted(USER_ID, ADMIN_ID);
     private static final String CHECK_IF_USER_IS_GUEST = "SELECT %s FROM GUEST WHERE %s = ?".formatted(GUEST_ID, GUEST_ID);
@@ -47,10 +49,11 @@ public class DatabaseUtils {
     private static final String ROOM_PRICE_PER_NIGHT = "price_per_night";
     private static final String ROOM_DISTANCE_FROM_CITY_CENTER = "distance_from_city_center";
     private static final String ROOM_DISTANCE_FROM_BEACH = "distance_from_beach";
+    private static final String ROOM_NUMBER = "room_number";
     private static final String ROOM_AMENITIES = "amenities";
 
     private static final String SELECT_ROOMS =
-            "SELECT %s, %s, %s, %s, %s, %s, %s FROM ROOMS"
+            "SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM ROOMS"
                     .formatted(
                             ROOM_ID,
                             ROOM_NUMBER_OF_BEDS,
@@ -58,10 +61,11 @@ public class DatabaseUtils {
                             ROOM_PRICE_PER_NIGHT,
                             ROOM_DISTANCE_FROM_CITY_CENTER,
                             ROOM_DISTANCE_FROM_BEACH,
+                            ROOM_NUMBER,
                             ROOM_AMENITIES
                     );
     private static final String INSERT_ROOM =
-            "INSERT INTO ROOMS (%s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO ROOMS (%s, %s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
                     .formatted(
                             ROOM_ID,
                             ROOM_NUMBER_OF_BEDS,
@@ -69,6 +73,7 @@ public class DatabaseUtils {
                             ROOM_PRICE_PER_NIGHT,
                             ROOM_DISTANCE_FROM_CITY_CENTER,
                             ROOM_DISTANCE_FROM_BEACH,
+                            ROOM_NUMBER,
                             ROOM_AMENITIES
                     );
 
@@ -81,6 +86,26 @@ public class DatabaseUtils {
 
     private static final String SELECT_REVIEWS = "SELECT %s, %s, %s, %s, %s, %s FROM reviews".formatted(REVIEW_ID, REVIEW_GUEST_ID, REVIEW_TEXT, REVIEW_DATE, REVIEW_RATING, REVIEW_CREATED_AT);
     private static final String INSERT_REVIEW = "INSERT INTO reviews (%s, %s, %s) VALUES(?,?,?)".formatted(REVIEW_ID, REVIEW_GUEST_ID, REVIEW_TEXT);
+
+    // Booking constants
+    private static final String BOOKING_ID = "ID";
+    private static final String BOOKING_ROOM_ID = "ROOM_ID";
+    private static final String BOOKING_USER_ID = "USER_ID";
+    private static final String BOOKING_CHECK_IN = "CHECK_IN";
+    private static final String BOOKING_CHECK_OUT = "CHECK_OUT";
+
+    private static final String SELECT_BOOKINGS =
+            "SELECT %s, %s, %s, %s, %s FROM bookings"
+                    .formatted(BOOKING_ID, BOOKING_ROOM_ID, BOOKING_USER_ID, BOOKING_CHECK_IN, BOOKING_CHECK_OUT);
+    private static final String INSERT_BOOKING =
+            "INSERT INTO bookings (%s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?)"
+                    .formatted(BOOKING_ID, BOOKING_ROOM_ID, BOOKING_USER_ID, BOOKING_CHECK_IN, BOOKING_CHECK_OUT);
+    private static final String UPDATE_BOOKING =
+            "UPDATE bookings SET %s = ?, %s = ?, %s = ? WHERE %s = ? AND %s = ?"
+                    .formatted(BOOKING_CHECK_IN, BOOKING_CHECK_OUT, BOOKING_USER_ID, BOOKING_ROOM_ID, BOOKING_USER_ID);
+    private static final String DELETE_BOOKING =
+            "DELETE FROM bookings WHERE %s = ? AND %s = ?"
+                    .formatted(BOOKING_ROOM_ID, BOOKING_USER_ID);
 
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseUtils.class);
@@ -255,12 +280,14 @@ public class DatabaseUtils {
                    var pricePerNight = rs.getBigDecimal(ROOM_PRICE_PER_NIGHT);
                    var distanceFromCityCenter = rs.getBigDecimal(ROOM_DISTANCE_FROM_CITY_CENTER);
                    var distanceFromBeach = rs.getBigDecimal(ROOM_DISTANCE_FROM_BEACH);
+                   var roomNumber = rs.getInt(ROOM_NUMBER);
                    //TODO test
                    var amenites = rs.getArray(ROOM_AMENITIES);
 
                    var roomBuilder = new Room.RoomBuilder(id, numberOfBeds, pricePerNight)
                            .sizeInSqrM(sizeInSqrM)
                            .distanceFromCityCenter(distanceFromCityCenter)
+                           .roomNumber(roomNumber)
                            .distanceFromBeach(distanceFromBeach);
                    var amentiesResultSet = amenites.getResultSet();
                    while(amentiesResultSet.next()){
@@ -313,6 +340,7 @@ public class DatabaseUtils {
             pstmt.setBigDecimal(4, room.getPricePerNight());
             pstmt.setBigDecimal(5, room.getDistanceFromCityCenter());
             pstmt.setBigDecimal(6, room.getDistanceFromBeach());
+            pstmt.setInt(7, room.getRoomNumber());
             //TODO: da manje izgleda ko chat kod
             Array sqlArray = conn.createArrayOf(
                     "VARCHAR", // H2 stores ENUM as VARCHAR internally
@@ -322,7 +350,7 @@ public class DatabaseUtils {
                             .toArray(String[]::new)
             );
 
-            pstmt.setArray(7, sqlArray);
+            pstmt.setArray(8, sqlArray);
 
 
             pstmt.executeUpdate();
@@ -353,5 +381,86 @@ public class DatabaseUtils {
             throw new DatabaseException(e);
         }
         return reviews;
+    }
+
+    public static List<Booking> getAllBookings() throws DatabaseException, IOException {
+        log.info("Getting bookings from db");
+        var bookings = new ArrayList<Booking>();
+
+        try (var conn = createConnection();
+             var pstms = conn.prepareStatement(SELECT_BOOKINGS);
+             var rs = pstms.executeQuery()
+        ) {
+            while (rs.next()) {
+                UUID roomId = UUID.fromString(rs.getString(BOOKING_ROOM_ID));
+                UUID userId = UUID.fromString(rs.getString(BOOKING_USER_ID));
+                LocalDateTime checkIn = rs.getTimestamp(BOOKING_CHECK_IN).toLocalDateTime();
+                LocalDateTime checkOut = rs.getTimestamp(BOOKING_CHECK_OUT).toLocalDateTime();
+
+                User user = getUserWithUUID(userId);
+                List<Room> rooms = getAllRooms();
+                Room room = rooms.stream()
+                        .filter(r -> r.getId().equals(roomId))
+                        .findFirst()
+                        .orElseThrow(() -> new DatabaseException("Room not found for booking"));
+
+                bookings.add(new Booking(room, user, checkIn, checkOut));
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return bookings;
+    }
+
+    public static void saveNewBooking(Booking booking) throws DatabaseException, IOException {
+        log.info("Adding booking into db");
+
+        try (var conn = createConnection();
+             var pstmt = conn.prepareStatement(INSERT_BOOKING)
+        ) {
+            UUID bookingId = UUID.randomUUID();
+            pstmt.setString(1, bookingId.toString());
+            pstmt.setString(2, booking.room().getId().toString());
+            pstmt.setString(3, booking.user().getId().toString());
+            pstmt.setTimestamp(4, Timestamp.valueOf(booking.checkIn()));
+            pstmt.setTimestamp(5, Timestamp.valueOf(booking.checkOut()));
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    public static void deleteBooking(Booking booking) throws DatabaseException, IOException {
+        log.info("Deleting booking from db");
+
+        try (var conn = createConnection();
+             var pstmt = conn.prepareStatement(DELETE_BOOKING)
+        ) {
+            pstmt.setString(1, booking.room().getId().toString());
+            pstmt.setString(2, booking.user().getId().toString());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    public static void updateBooking(Booking booking) throws DatabaseException, IOException {
+        log.info("Updating booking in db");
+
+        try (var conn = createConnection();
+             var pstmt = conn.prepareStatement(UPDATE_BOOKING)
+        ) {
+            pstmt.setTimestamp(1, Timestamp.valueOf(booking.checkIn()));
+            pstmt.setTimestamp(2, Timestamp.valueOf(booking.checkOut()));
+            pstmt.setString(3, booking.user().getId().toString());
+            pstmt.setString(4, booking.room().getId().toString());
+            pstmt.setString(5, booking.user().getId().toString());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 }

@@ -20,4 +20,7 @@ public interface Repository {
     void updateUser(User user);
     void deleteUser(User user);
     void addRoom(Room room);
+    void addBooking(Booking booking);
+    void deleteBooking(Booking booking);
+    void updateBooking(Booking booking);
 }

@@ -22,13 +22,13 @@ public class PasswordUtils {
 
         log.debug("Checking password for UUID:{}", userId);
         var filePath = Path.of(userId.toString());
-        if (Files.exists(filePath)) return false;
+        if (!Files.exists(filePath)) return false;
         try(var fileReader = new FileReader(filePath.toFile())) {
             // TODO move to create account screen String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));
             var hashed = fileReader.readAllAsString();
             log.debug("Returning {}", BCrypt.checkpw(password, hashed));
             return BCrypt.checkpw(password, hashed);
-        } catch(IOException e) {
+        } catch(IOException _) {
             throw new RuntimeException("Something when wrong");
         }
     }
